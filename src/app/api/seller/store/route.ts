@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
         );
       }
   
-      const store = await Store.findOne({ userId: decoded.id });
+      const store = await Store.find({ userId: decoded.id });
       if (!store) {
         return NextResponse.json(
           errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Store not found"),

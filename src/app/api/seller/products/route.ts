@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
 
     // Upload images to Cloudinary
     let uploadedImages: string[] = [];
+    console.log("imagesBase64:", imagesBase64);
     if (imagesBase64 && imagesBase64.length > 0) {
       for (const img of imagesBase64) {
         const uploaded = await cloudinary.uploader.upload(img, { folder: "products" });
