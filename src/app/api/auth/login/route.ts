@@ -5,11 +5,13 @@ import User from "@/models/User";
 import { connectDB } from "@/config/db";
 import { errorResponse, successResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
+import "@/models/index";
+import { mergeGuestCartWithUserCart } from "@/lib/cartHelpers";
 
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { email, password } = await req.json();
+    const { email, password,sessionId } = await req.json();
 
     // find user
     const user = await User.findOne({ email });
@@ -30,6 +32,10 @@ export async function POST(req: NextRequest) {
       { expiresIn: "1h" }
     );
 
+    const mergedCart = await mergeGuestCartWithUserCart(sessionId, user._id);
+    if(mergedCart){
+      console.log("Cart Merge Successfull")
+    }
     return NextResponse.json(
       successResponse(
         "FETCH",

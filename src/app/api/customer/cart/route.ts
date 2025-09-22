@@ -125,6 +125,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Get or create cart
+    console.log("user Id :::",userId,"session id :::",sessionId);
     const cart = await getOrCreateCart(userId, sessionId || undefined);
     
     if (!cart) {

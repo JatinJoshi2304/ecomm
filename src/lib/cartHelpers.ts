@@ -25,7 +25,7 @@ export async function getOrCreateCart(userId?: string, sessionId?: string) {
     if (!cart) {
       try {
 
-        cart = await Cart.create({ sessionId, userId: null });
+        cart = await Cart.create({ sessionId });
         console.log("Cart created ::",cart);
       } catch (error: any) {
         // Handle duplicate key error
@@ -116,6 +116,7 @@ export async function formatCartResponse(cart: any) {
 
 // Helper function to merge guest cart with user cart
 export async function mergeGuestCartWithUserCart(guestSessionId: string, userId: string) {
+  console.log("Merge Initiated");
   const guestCart = await Cart.findOne({ sessionId: guestSessionId });
   const userCart = await Cart.findOne({ userId });
 

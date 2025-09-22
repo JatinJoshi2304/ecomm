@@ -3,7 +3,7 @@ import { connectDB } from "@/config/db";
 import Product from "@/models/product.model";
 import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
-
+import "@/models/index";
 // GET /api/customer/products/featured - Get featured products
 export async function GET(req: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       "category", "brand", "size", "color", "material", "tags", "storeId"
     ];
 
-    let products = [];
+    let products:any;
 
     if (type === "all") {
       // Get all types of featured products
@@ -53,10 +53,6 @@ export async function GET(req: NextRequest) {
       let sort: any = {};
 
       switch (type) {
-        case "topRated":
-          query = { ...baseQuery, averageRating: { $gte: 4.0 } };
-          sort = { averageRating: -1, reviewCount: -1 };
-          break;
         case "bestSelling":
           sort = { purchases: -1 };
           break;

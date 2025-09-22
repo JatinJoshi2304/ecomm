@@ -75,8 +75,8 @@ export default function AddProductPage() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   // Hardcoded tokens for testing
-  const SELLER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2QxMWRlOTY2ZDQ2ZTI4M2UyN2U5ZCIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTg0NjkxNjEsImV4cCI6MTc1ODQ3Mjc2MX0.bjoLqvaeT-5lcvdzZ4C-aWpbrgjLsS__yfnCwRtwhSo";
-  const ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2QwNWJkOTY2ZDQ2ZTI4M2UyN2U4ZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1ODQ2ODA4MiwiZXhwIjoxNzU4NDcxNjgyfQ.gdFP9WWTdb3CXWLBYaWuN3ySvDGD2x5S1K3P32yuB_4";
+  const SELLER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2QxMWRlOTY2ZDQ2ZTI4M2UyN2U5ZCIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTg1MTkyMjksImV4cCI6MTc1ODUyMjgyOX0.C-i1oZmLAoa6Awhrfa-KjEft0gMCqoGNabZm4fyUON4";
+  // const ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2QwNWJkOTY2ZDQ2ZTI4M2UyN2U4ZCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1ODQ2ODA4MiwiZXhwIjoxNzU4NDcxNjgyfQ.gdFP9WWTdb3CXWLBYaWuN3ySvDGD2x5S1K3P32yuB_4";
 
   useEffect(() => {
     loadOptions();
@@ -87,7 +87,7 @@ export default function AddProductPage() {
     try {
       // Load categories
       const categoriesResponse = await fetch('/api/admin/categories', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (categoriesResponse.ok) {
         const categoriesData = await categoriesResponse.json();
@@ -98,7 +98,7 @@ export default function AddProductPage() {
 
       // Load brands
       const brandsResponse = await fetch('/api/admin/brands', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (brandsResponse.ok) {
         const brandsData = await brandsResponse.json();
@@ -109,7 +109,7 @@ export default function AddProductPage() {
 
       // Load sizes
       const sizesResponse = await fetch('/api/admin/sizes', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (sizesResponse.ok) {
         const sizesData = await sizesResponse.json();
@@ -120,7 +120,7 @@ export default function AddProductPage() {
 
       // Load colors
       const colorsResponse = await fetch('/api/admin/colors', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (colorsResponse.ok) {
         const colorsData = await colorsResponse.json();
@@ -131,7 +131,7 @@ export default function AddProductPage() {
 
       // Load materials
       const materialsResponse = await fetch('/api/admin/materials', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (materialsResponse.ok) {
         const materialsData = await materialsResponse.json();
@@ -142,7 +142,7 @@ export default function AddProductPage() {
 
       // Load tags
       const tagsResponse = await fetch('/api/admin/tags', {
-        headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
+        headers: { 'Authorization': `Bearer ${SELLER_TOKEN}` }
       });
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json();
@@ -302,258 +302,276 @@ export default function AddProductPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter product name"
-                />
-              </div>
+<form onSubmit={handleSubmit} className="space-y-6">
+  {/* Basic Information */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Product Name *
+      </label>
+      <input
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleInputChange}
+        required
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Enter product name"
+      />
+    </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Price *
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Price *
+      </label>
+      <input
+        type="number"
+        name="price"
+        value={formData.price}
+        onChange={handleInputChange}
+        required
+        min="0"
+        step="0.01"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="0.00"
+      />
+    </div>
+  </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                required
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter product description"
-              />
-            </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      Description *
+    </label>
+    <textarea
+      name="description"
+      value={formData.description}
+      onChange={handleInputChange}
+      required
+      rows={4}
+      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      placeholder="Enter product description"
+    />
+  </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Stock Quantity *
-                </label>
-                <input
-                  type="number"
-                  name="stock"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  required
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="0"
-                />
-              </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Stock Quantity *
+      </label>
+      <input
+        type="number"
+        name="stock"
+        value={formData.stock}
+        onChange={handleInputChange}
+        required
+        min="0"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="0"
+      />
+    </div>
+  </div>
 
-            </div>
+  {/* Category and Brand */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Category *
+      </label>
+      <select
+        name="category"
+        value={formData.category}
+        onChange={handleInputChange}
+        required
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      >
+        <option value="">Select Category</option>
+        {categories.map((category) => (
+          <option key={category._id} value={category._id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
+    </div>
 
-            {/* Category and Brand */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category *
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Brand *
+      </label>
+      <select
+        name="brand"
+        value={formData.brand}
+        onChange={handleInputChange}
+        required
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      >
+        <option value="">Select Brand</option>
+        {brands.map((brand) => (
+          <option key={brand._id} value={brand._id}>
+            {brand.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand *
-                </label>
-                <select
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Brand</option>
-                  {brands.map((brand) => (
-                    <option key={brand._id} value={brand._id}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+  {/* Size and Color */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Size
+      </label>
+      <select
+        name="size"
+        value={formData.size}
+        onChange={handleInputChange}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      >
+        <option value="">Select Size</option>
+        {sizes.map((size) => (
+          <option key={size._id} value={size._id}>
+            {size.name} ({size.type})
+          </option>
+        ))}
+      </select>
+    </div>
 
-            {/* Size and Color */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Size
-                </label>
-                <select
-                  name="size"
-                  value={formData.size}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Size</option>
-                  {sizes.map((size) => (
-                    <option key={size._id} value={size._id}>
-                      {size.name} ({size.type})
-                    </option>
-                  ))}
-                </select>
-              </div>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Color
+      </label>
+      <select
+        name="color"
+        value={formData.color}
+        onChange={handleInputChange}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      >
+        <option value="">Select Color</option>
+        {colors.map((color) => (
+          <option key={color._id} value={color._id}>
+            {color.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color
-                </label>
-                <select
-                  name="color"
-                  value={formData.color}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select Color</option>
-                  {colors.map((color) => (
-                    <option key={color._id} value={color._id}>
-                      {color.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+  {/* Material */}
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      Material
+    </label>
+    <select
+      name="material"
+      value={formData.material}
+      onChange={handleInputChange}
+      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    >
+      <option value="">Select Material</option>
+      {materials.map((material) => (
+        <option key={material._id} value={material._id}>
+          {material.name}
+        </option>
+      ))}
+    </select>
+  </div>
 
-            {/* Material */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Material
-              </label>
-              <select
-                name="material"
-                value={formData.material}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Select Material</option>
-                {materials.map((material) => (
-                  <option key={material._id} value={material._id}>
-                    {material.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+  {/* Tags */}
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      Tags
+    </label>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+      {tags.map((tag) => (
+        <label
+          key={tag._id}
+          className="flex items-center space-x-2 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            checked={formData.tags.includes(tag._id)}
+            onChange={() => handleTagToggle(tag._id)}
+            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <span className="text-sm text-gray-700">{tag.name}</span>
+        </label>
+      ))}
+    </div>
+  </div>
 
-            {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tags
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                {tags.map((tag) => (
-                  <label key={tag._id} className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.tags.includes(tag._id)}
-                      onChange={() => handleTagToggle(tag._id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">{tag.name}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+  {/* Images */}
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+      Product Images *
+    </label>
+    <input
+      type="file"
+      multiple
+      accept="image/*"
+      onChange={handleImageUpload}
+      required
+      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
 
-            {/* Images */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product Images *
-              </label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              
-              {/* Image Previews */}
-              {imagePreviews.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {imagePreviews.map((preview, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={preview}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+    {/* Image Previews */}
+    {imagePreviews.length > 0 && (
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {imagePreviews.map((preview, index) => (
+          <div key={index} className="relative">
+            <img
+              src={preview}
+              alt={`Preview ${index + 1}`}
+              className="w-full h-32 object-cover rounded-lg border"
+            />
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {loading ? (
-                  <div className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Adding Product...
-                  </div>
-                ) : (
-                  'Add Product'
-                )}
-              </button>
-            </div>
-          </form>
+  {/* Submit Button */}
+  <div className="flex justify-end space-x-4">
+    <button
+      type="button"
+      onClick={() => router.back()}
+      className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      disabled={loading}
+      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+    >
+      {loading ? (
+        <div className="flex items-center">
+          <svg
+            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Adding Product...
+        </div>
+      ) : (
+        "Add Product"
+      )}
+    </button>
+  </div>
+</form>
+
         </div>
       </div>
 

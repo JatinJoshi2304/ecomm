@@ -6,9 +6,11 @@ import { loginUser, clearError } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const { sessionId } = useAppSelector((state) => state.cart);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    sessionId
   });
 
   const dispatch = useAppDispatch();
@@ -144,7 +146,7 @@ export default function LoginForm() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-3">
+            {/* <div className="mt-6 grid grid-cols-1 gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ email: 'admin@example.com', password: 'admin123' })}
@@ -166,7 +168,7 @@ export default function LoginForm() {
               >
                 Customer Login
               </button>
-            </div>
+            </div> */}
           </div>
         </form>
       </div>

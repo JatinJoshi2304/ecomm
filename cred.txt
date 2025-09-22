@@ -1,4 +1,18 @@
+Customer Cred : 
 {
-    "email": "john.doe@example.com",
-    "password": "password123"
-  }
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+
+Seller Cred :
+{
+  "email": "seller01@example.com",
+  "password": "123456"
+}
+
+
+Admin Cred:
+{
+  "email": "admin@example.com",
+  "password": "123456"
+}

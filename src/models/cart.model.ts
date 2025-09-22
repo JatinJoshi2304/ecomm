@@ -12,8 +12,8 @@ export interface ICart extends Document {
 
 const cartSchema: Schema<ICart> = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", default: null },
-    sessionId: { type: String, default: null },
+    userId: { type: Schema.Types.ObjectId, ref: "User", sparse: true},
+    sessionId: { type: String},
     items: [{ type: Schema.Types.ObjectId, ref: "CartItem" }],
     totalItems: { type: Number, default: 0 },
     totalPrice: { type: Number, default: 0 },
@@ -23,7 +23,7 @@ const cartSchema: Schema<ICart> = new Schema(
 
 // Ensure one cart per user or session
 // Create separate indexes for user and guest carts
-// cartSchema.index({ userId: 1 }, { unique: true, partialFilterExpression: { userId: { $ne: null } } });
-// cartSchema.index({ sessionId: 1 }, { unique: true, partialFilterExpression: { sessionId: { $ne: null } } });
+cartSchema.index({ userId: 1 }, { unique: true, partialFilterExpression: { userId: { $ne: null } } });
+cartSchema.index({ sessionId: 1 }, { unique: true, partialFilterExpression: { sessionId: { $ne: null } } });
 
 export default mongoose.models.Cart || mongoose.model<ICart>("Cart", cartSchema);

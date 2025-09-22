@@ -41,6 +41,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   const dispatch = useAppDispatch();
   const { sessionId } = useAppSelector((state) => state.cart);
 
+  const isCloudinaryImage = (url: string) => url.includes("res.cloudinary.com");
+  const imageUrl = product.images?.[0];
   const handleAddToCart = async () => {
     setIsAddingToCart(true);
     try {
@@ -104,22 +106,31 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden">
-          {/* {product.images && product.images.length > 0 && !imageError ? ( */}
-            {/* "" */}
-            {/* // <Image
-            //   src={product.images[0]}
-            //   alt={product.name}
-            //   fill
-            //   className="object-cover hover:scale-105 transition-transform duration-300"
-            //   onError={() => setImageError(true)}
-            // /> */}
-          {/* ) : ( */}
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          {/* )} */}
+        {imageUrl && isCloudinaryImage(imageUrl) && !imageError ? (
+        <Image
+          src={imageUrl}
+          alt={product.name}
+          fill
+          className="object-cover hover:scale-105 transition-transform duration-300"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+          <svg
+            className="w-16 h-16 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+      )}
         </div>
       </Link>
 
