@@ -11,6 +11,7 @@ export const RESPONSE_MESSAGES = {
       VALIDATION_FAILED: "Validation failed",
       UNAUTHORIZED: "Unauthorized access",
       FORBIDDEN: "Access denied",
+      INSUFFICIENT_STOCK: "Insufficient stock",
     },
     STATUS_CODES: {
       SUCCESS: 200,
