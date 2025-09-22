@@ -117,7 +117,7 @@ export default function RegisterForm() {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 Account Type
               </label>
@@ -132,7 +132,7 @@ export default function RegisterForm() {
                 <option value="customer">Customer</option>
                 <option value="seller">Seller</option>
               </select>
-            </div>
+            </div> */}
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">

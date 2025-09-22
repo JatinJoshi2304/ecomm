@@ -1,6 +1,5 @@
 import Cart from "@/models/cart.model";
 import CartItem from "@/models/cartItem.model";
-import Product from "@/models/product.model";
 
 // Helper function to get or create cart
 export async function getOrCreateCart(userId?: string, sessionId?: string) {

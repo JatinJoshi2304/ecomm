@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import Cart from "@/models/cart.model";
 import CartItem from "@/models/cartItem.model";
-import Product from "@/models/product.model";
 import { verifyToken } from "@/lib/jwt";
 import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
-import { getOrCreateCart, updateCartTotals, formatCartResponse } from "@/lib/cartHelpers";
+import { updateCartTotals, formatCartResponse } from "@/lib/cartHelpers";
 
 // PATCH /api/customer/cart/items/[id] - Update cart item quantity
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

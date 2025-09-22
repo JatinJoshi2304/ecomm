@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
       const url = new URL(req.url);
       const typeFilter = url.searchParams.get("type");
   
-      const query: any = { isActive: true };
+      const query:any = { isActive: true };
       if (typeFilter) query.type = typeFilter;
   
       const sizes = await Size.find(query).sort({ createdAt: -1 });

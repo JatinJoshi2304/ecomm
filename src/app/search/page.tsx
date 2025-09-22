@@ -192,11 +192,10 @@ export default function SearchPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
+          {/* <div className="lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
               
-              {/* Search Query */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Search
@@ -210,7 +209,6 @@ export default function SearchPage() {
                 />
               </div>
 
-              {/* Category Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Category
@@ -228,8 +226,6 @@ export default function SearchPage() {
                   ))}
                 </select>
               </div>
-
-              {/* Brand Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Brand
@@ -248,7 +244,6 @@ export default function SearchPage() {
                 </select>
               </div>
 
-              {/* Price Range */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Price Range
@@ -270,8 +265,6 @@ export default function SearchPage() {
                   />
                 </div>
               </div>
-
-              {/* Sort Options */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Sort By
@@ -295,7 +288,6 @@ export default function SearchPage() {
                 </select>
               </div>
 
-              {/* Clear Filters */}
               <button
                 onClick={() => setFilters({
                   query: '',
@@ -313,7 +305,7 @@ export default function SearchPage() {
                 Clear All Filters
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Products Grid */}
           <div className="flex-1">

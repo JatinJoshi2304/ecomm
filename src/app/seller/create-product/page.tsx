@@ -98,6 +98,7 @@ export default function CreateProductPage() {
         setMessage(`❌ Error: ${data.message}`);
       }
     } catch (err) {
+      console.log(err)
       setMessage("⚠️ Something went wrong!");
     }
   };

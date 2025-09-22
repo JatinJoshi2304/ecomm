@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -8,35 +8,6 @@ import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchFeaturedProducts, fetchCategories } from '@/store/slices/productSlice';
 
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  images: string[];
-  averageRating: number;
-  reviewCount: number;
-  category: {
-    id: string;
-    name: string;
-  };
-  brand: {
-    id: string;
-    name: string;
-  };
-  store: {
-    id: string;
-    name: string;
-    image: string;
-  };
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  productCount?: number;
-}
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -76,7 +47,8 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/categories"
+                // href="/categories"
+                href="#"
                 className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
               >
                 Browse Categories
@@ -93,11 +65,11 @@ export default function Home() {
       </section>
 
        {/* Categories Section */}
- <section className="py-16">
+ {/* <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
-            <p className="text-lg text-gray-600">Find exactly what you're looking for</p>
+            <p className="text-lg text-gray-600">Find exactly what you&apos;re looking for</p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -118,7 +90,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Best Selling Products */}
       <section className="py-16">

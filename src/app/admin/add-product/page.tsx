@@ -4,10 +4,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Image from 'next/image';
 
 interface Category {
   id: string;
   name: string;
+}
+
+interface Seller {
+  id: string;
+  isApproved: boolean;
+  name?: string; // optional, add if needed
 }
 
 interface Brand {
@@ -169,8 +176,8 @@ export default function AdminAddProductPage() {
         const result = await response.json();
         if (result.success) {
           // Get stores for approved sellers
-          const approvedSellers = result.data.sellers.filter((seller: any) => seller.isApproved);
-          const storePromises = approvedSellers.map(async (seller: any) => {
+          const approvedSellers = result.data.sellers.filter((seller: Seller) => seller.isApproved);
+          const storePromises = approvedSellers.map(async (seller: Seller) => {
             try {
               const storeResponse = await fetch(`/api/seller/store?userId=${seller.id}`, {
                 headers: { 'Authorization': `Bearer ${ADMIN_TOKEN}` }
@@ -557,7 +564,7 @@ export default function AdminAddProductPage() {
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                   {imagePreviews.map((preview, index) => (
                     <div key={index} className="relative">
-                      <img
+                      <Image
                         src={preview}
                         alt={`Preview ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border"

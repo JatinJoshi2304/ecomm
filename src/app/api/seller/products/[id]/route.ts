@@ -26,11 +26,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const body = await req.json();
-    let updateData = { ...body };
+    const updateData = { ...body };
 
     // Upload new images if provided
     if (body.imagesBase64 && body.imagesBase64.length > 0) {
-      let uploadedImages: string[] = [];
+      const uploadedImages: string[] = [];
       for (const img of body.imagesBase64) {
         const uploaded = await cloudinary.uploader.upload(img, { folder: "products" });
         uploadedImages.push(uploaded.secure_url);

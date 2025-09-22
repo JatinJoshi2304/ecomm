@@ -49,12 +49,6 @@ export default function CategoryProductsPage() {
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  useEffect(() => {
-    if (categoryId) {
-      loadCategoryProducts();
-    }
-  }, [categoryId, currentPage, sortBy, sortOrder]);
-
   const loadCategoryProducts = async () => {
     try {
       setLoading(true);
@@ -82,6 +76,12 @@ export default function CategoryProductsPage() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (categoryId) {
+      loadCategoryProducts();
+    }
+  }, [categoryId, loadCategoryProducts,currentPage, sortBy, sortOrder]);
+
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -148,7 +148,7 @@ export default function CategoryProductsPage() {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Category Not Found</h1>
-            <p className="text-gray-600 mb-6">The category you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-6">The category you&apos;re looking for doesn&apos;t exist.</p>
             <Link
               href="/categories"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -294,7 +294,7 @@ export default function CategoryProductsPage() {
             </svg>
             <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-4">No products in this category</h2>
             <p className="text-gray-600 mb-8">
-              We're working on adding more products to this category. Check back soon!
+              We&apos;re working on adding more products to this category. Check back soon!
             </p>
             <div className="space-x-4">
               <Link

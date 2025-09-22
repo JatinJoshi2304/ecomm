@@ -64,12 +64,6 @@ export default function ProductDetail() {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    if (productId) {
-      loadProduct();
-    }
-  }, [productId]);
-
   const loadProduct = async () => {
     try {
       setLoading(true);
@@ -92,6 +86,14 @@ export default function ProductDetail() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (productId) {
+      loadProduct();
+    }
+  }, [productId,loadProduct]);
+
+  
 
   const handleAddToCart = async () => {
     if (!product) return;

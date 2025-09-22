@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Image from 'next/image';
 
 interface Category {
   _id: string;
@@ -70,7 +71,7 @@ export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [selectedStore, setSelectedStore] = useState('');
+  // const [selectedStore, setSelectedStore] = useState('');
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -232,7 +233,7 @@ export default function AddProductPage() {
         material: formData.material || undefined,
         tags: formData.tags,
         imagesBase64: imageBase64s,
-        storeId: selectedStore
+        storeId: ''
       };
 
       const response = await fetch('/api/seller/products', {
@@ -517,7 +518,7 @@ export default function AddProductPage() {
       <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
         {imagePreviews.map((preview, index) => (
           <div key={index} className="relative">
-            <img
+            <Image
               src={preview}
               alt={`Preview ${index + 1}`}
               className="w-full h-32 object-cover rounded-lg border"

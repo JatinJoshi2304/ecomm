@@ -33,7 +33,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const { storeName, storeDescription, storeImageBase64 } = await req.json();
-    let updateData: any = {};
+    const updateData: any = {};
 
     // Update store name if provided
     if (storeName) updateData.storeName = storeName;

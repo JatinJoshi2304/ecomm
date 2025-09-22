@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
@@ -9,42 +8,6 @@ import Footer from '@/components/Footer';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchCart, updateCartItem, removeFromCart, clearCart } from '@/store/slices/cartSlice';
 
-interface CartItem {
-  id: string;
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    images: string[];
-    stock: number;
-  };
-  quantity: number;
-  price: number;
-  size?: {
-    id: string;
-    name: string;
-    type: string;
-  };
-  color?: {
-    id: string;
-    name: string;
-    hexCode: string;
-  };
-  subtotal: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Cart {
-  id: string;
-  userId?: string;
-  sessionId?: string;
-  items: CartItem[];
-  totalItems: number;
-  totalPrice: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export default function CartPage() {
   const [updatingItems, setUpdatingItems] = useState<Set<string>>(new Set());
@@ -151,7 +114,7 @@ export default function CartPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
             </svg>
             <h1 className="text-2xl font-bold text-gray-900 mt-6 mb-4">Your cart is empty</h1>
-            <p className="text-gray-600 mb-8">Looks like you haven't added any items to your cart yet.</p>
+            <p className="text-gray-600 mb-8">Looks like you haven&apos;t added any items to your cart yet.</p>
             <Link
               href="/"
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
@@ -246,7 +209,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
                             disabled={updatingItems.has(item.id) || item.quantity <= 1}
-                            className="w-8 h-8 border border-gray-300 rounded-l-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-8 h-8 border border-gray-300 rounded-l-lg flex items-center justify-center text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             -
                           </button>
@@ -257,7 +220,7 @@ export default function CartPage() {
                               const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
                               updateItemQuantity(item.id, newQuantity);
                             }}
-                            className="w-16 h-8 border-t border-b border-gray-300 text-center text-sm"
+                            className="w-16 h-8 border-t border-b border-gray-300 text-black text-center text-sm"
                             min="1"
                             max={item.product.stock}
                             disabled={updatingItems.has(item.id)}
@@ -265,7 +228,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
                             disabled={updatingItems.has(item.id) || item.quantity >= item.product.stock}
-                            className="w-8 h-8 border border-gray-300 rounded-r-lg flex items-center justify-center hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-8 h-8 border border-gray-300 rounded-r-lg flex items-center justify-center text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             +
                           </button>

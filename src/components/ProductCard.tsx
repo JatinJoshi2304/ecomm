@@ -104,7 +104,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      <Link href={`/products/${product.id}`}>
+      {/* <Link href={`/products/${product.id}`}> */}
+      <div>
         <div className="relative aspect-square overflow-hidden">
         {imageUrl && isCloudinaryImage(imageUrl) && !imageError ? (
         <Image
@@ -114,7 +115,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           className="object-cover hover:scale-105 transition-transform duration-300"
           onError={() => setImageError(true)}
         />
-      ) : (
+        ) : (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           <svg
             className="w-16 h-16 text-gray-400"
@@ -132,15 +133,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         </div>
       )}
         </div>
-      </Link>
+      </div>
 
       <div className="p-4">
         <div className="mb-2">
-          <Link href={`/products/${product.id}`}>
+          {/* <Link href={`/products/${product.id}`}> */}
+          <div>
             <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 line-clamp-2">
               {product.name}
             </h3>
-          </Link>
+          </div>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
             {product.description}
           </p>

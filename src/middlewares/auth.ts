@@ -27,7 +27,7 @@ export const authMiddleware = (allowedRoles: string[] = []) => {
       // ✅ Continue request
       return null;
     } catch (error) {
-      return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
+      return NextResponse.json({ error: "Invalid Token",message:error }, { status: 401 });
     }
   };
 };

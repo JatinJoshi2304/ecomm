@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ColorSelector from '@/components/ColorSelector';
+import Image from 'next/image';
 
 interface Category {
   id: string;
@@ -718,7 +719,7 @@ export default function AdvancedAddProductPage() {
                   <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                     {imagePreviews.map((preview, index) => (
                       <div key={index} className="relative">
-                        <img
+                        <Image
                           src={preview}
                           alt={`Preview ${index + 1}`}
                           className="w-full h-32 object-cover rounded-lg border"

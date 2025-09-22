@@ -66,7 +66,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       updatedAt: product.updatedAt,
     };
 
-    let responseData: any = { product: productData };
+    const responseData: any = { product: productData };
 
     // Get reviews if requested
     if (includeReviews) {

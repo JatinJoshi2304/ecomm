@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logoutUser } from '@/store/slices/authSlice';
 import { fetchCart, generateNewSessionId } from '@/store/slices/cartSlice';
+import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,20 +81,22 @@ export default function Header() {
 
           {/* Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
+            {/* <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
               Home
             </Link>
             <Link href="/categories" className="text-gray-700 hover:text-blue-600 font-medium">
               Categories
-            </Link>
+            </Link> */}
             
             {/* Cart */}
             <Link href="/cart" className="relative text-gray-700 hover:text-blue-600">
-              <img 
+              <Image
                 src="/cart.png" 
                 alt="Cart" 
+                width={30}
+                  height={30}
                 className="w-6 h-6"
-              />
+              />  
               {cart && cart.totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {cart.totalItems}
@@ -114,12 +117,12 @@ export default function Header() {
                   </span>
                 </button>
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  {/* <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Profile
                   </Link>
                   <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Orders
-                  </Link>
+                  </Link> */}
                   {user.role === 'admin' && (
                     <Link href="/admin/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Admin Dashboard

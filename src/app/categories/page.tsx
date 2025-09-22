@@ -58,7 +58,7 @@ export default function CategoriesPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Shop by Category</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Discover products organized by category. Find exactly what you're looking for with our comprehensive selection.
+            Discover products organized by category. Find exactly what you&apos;re looking for with our comprehensive selection.
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function CategoriesPage() {
             </svg>
             <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-4">No categories found</h2>
             <p className="text-gray-600 mb-8">
-              We're working on adding more categories. Check back soon!
+              We&apos;re working on adding more categories. Check back soon!
             </p>
             <Link
               href="/"

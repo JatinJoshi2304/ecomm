@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       };
     } else {
       // Get specific type
-      let query = baseQuery;
+      const query = baseQuery;
       let sort: any = {};
 
       switch (type) {
