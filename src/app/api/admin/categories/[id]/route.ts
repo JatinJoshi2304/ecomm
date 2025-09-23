@@ -6,7 +6,7 @@ import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 
 // PATCH /api/admin/categories/:id
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const { name, description, isActive } = await req.json();
 
     const category = await Category.findById(id);
@@ -60,7 +60,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
 
 // DELETE /api/admin/categories/:id
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
       await connectDB();
   
@@ -81,7 +81,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         );
       }
   
-      const { id } = params;
+      const { id } = await params;
       const category = await Category.findById(id);
       if (!category) {
         return NextResponse.json(

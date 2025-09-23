@@ -8,12 +8,12 @@ import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import { updateCartTotals, formatCartResponse } from "@/lib/cartHelpers";
 
 // PATCH /api/customer/cart/items/[id] - Update cart item quantity
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
     const { quantity, sessionId } = await req.json();
-    const { id } = params;
+    const { id } = await params;
 
     if (!quantity || quantity < 1) {
       return NextResponse.json(
@@ -119,13 +119,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/customer/cart/items/[id] - Remove item from cart
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
     const url = new URL(req.url);
     const sessionId = url.searchParams.get("sessionId");
-    const { id } = params;
+    const { id } = await params;
 
     // Try to get user from token
     let userId: string | undefined;

@@ -6,7 +6,7 @@ import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 
 // GET /api/customer/products/[id] - Get product details
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const reviewsLimit = parseInt(url.searchParams.get("reviewsLimit") || "5");
     const relatedLimit = parseInt(url.searchParams.get("relatedLimit") || "4");
 
-    const { id } = params;
+    const { id } = await params;
 
     // Get product details
     const product = await Product.findOne({

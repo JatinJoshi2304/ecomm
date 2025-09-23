@@ -6,7 +6,7 @@ import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 
 // GET /api/customer/products/category/[id] - Get products by category
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const limit = parseInt(url.searchParams.get("limit") || "12");
     const skip = (page - 1) * limit;
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verify category exists
     const category = await Category.findById(id);

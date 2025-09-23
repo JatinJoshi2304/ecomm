@@ -8,7 +8,7 @@ import "@/models/index";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     // Check authentication
@@ -17,7 +17,7 @@ export async function GET(
 
     await connectDB();
 
-    const { orderId } = params;
+    const { orderId } = await params;
 
     // Get order with full details
     const order = await Order.findById(orderId)

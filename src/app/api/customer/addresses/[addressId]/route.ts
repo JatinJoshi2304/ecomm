@@ -8,7 +8,7 @@ import "@/models/index";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { addressId: string } }
+  { params }: { params: Promise<{ addressId: string }> }
 ) {
   try {
     // Check authentication
@@ -18,7 +18,7 @@ export async function PUT(
     await connectDB();
 
     const userId = (req as any).user.id;
-    const { addressId } = params;
+    const { addressId } = await params;
     const { name, street, city, state, zipCode, country, phone, isDefault } = await req.json();
 
     // Validate required fields
@@ -88,7 +88,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { addressId: string } }
+  { params }: { params: Promise<{ addressId: string }> }
 ) {
   try {
     // Check authentication
@@ -98,7 +98,7 @@ export async function DELETE(
     await connectDB();
 
     const userId = (req as any).user.id;
-    const { addressId } = params;
+    const { addressId } = await params;
 
     // Find and delete address
     const address = await Address.findOneAndDelete({ _id: addressId, userId });

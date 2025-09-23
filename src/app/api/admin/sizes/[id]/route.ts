@@ -6,7 +6,7 @@ import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 
 // PATCH /api/admin/sizes/:id
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
 
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const { name, type, description, isActive } = await req.json();
 
     const size = await Size.findById(id);
@@ -70,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/admin/sizes/:id
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
       await connectDB();
   
@@ -91,7 +91,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         );
       }
   
-      const { id } = params;
+      const { id } = await params;
       const size = await Size.findById(id);
       if (!size) {
         return NextResponse.json(

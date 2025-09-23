@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { addToCart } from '@/store/slices/cartSlice';
 
 interface Product {
-  _id: string;
+  id?: string;
+  _id?: string;
   name: string;
   description: string;
   price: number;
@@ -60,16 +63,22 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProduct, setRelatedProduct] = useState<RelatedProducts | null>(null);
   const [loading, setLoading] = useState(true);
+  const [relatedLoading, setRelatedLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [error, setError] = useState<string>('');
+  const { sessionId } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
 
-  const loadProduct = async () => {
+  const loadProduct = useCallback(async () => {
+    if (!productId) return;
+    
     try {
       setLoading(true);
+      setError('');
       const response = await fetch(`/api/customer/products/${productId}`);
       
       if (response.ok) {
@@ -88,11 +97,13 @@ export default function ProductDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
 
-  const loadRelatedProduct = async (tags: string[]) => {
+  const loadRelatedProduct = useCallback(async (tags: string[]) => {
+    if (!tags || tags.length === 0) return;
+    
     try {
-      setLoading(true);
+      setRelatedLoading(true);
   
       // Join multiple tags as query params
       const query = tags.map(tag => `tags=${encodeURIComponent(tag)}`).join("&");
@@ -102,35 +113,27 @@ export default function ProductDetail() {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          setRelatedProduct(result.data.products); // 👈 use correct response key
-        } else {
-          setError('No related products found');
+          setRelatedProduct(result.data.products);
         }
-      } else {
-        setError('Failed to load related products');
       }
     } catch (error) {
       console.error('Failed to load related products:', error);
-      setError('Failed to load related products');
     } finally {
-      setLoading(false);
+      setRelatedLoading(false);
     }
-  };
+  }, []);
   
 
   useEffect(() => {
-    if (productId) {
-      loadProduct();
-      // loadRelatedProduct();
-    }
-  }, [productId]);
+    loadProduct();
+  }, [loadProduct]);
 
   useEffect(() => {
-    if (product && product.tags && product.tags.length > 0) {
-      const tagNames = product.tags.map(tag => tag._id); // or tag._id depending on backend
+    if (product && product.tags && product.tags.length > 0 && !relatedProduct && !relatedLoading) {
+      const tagNames = product.tags.map(tag => tag._id);
       loadRelatedProduct(tagNames);
     }
-  }, [product]);
+  }, [product, relatedProduct, relatedLoading, loadRelatedProduct]);
 
   
 
@@ -140,36 +143,35 @@ export default function ProductDetail() {
     try {
       setIsAddingToCart(true);
       setError('');
-      
-      const sessionId = localStorage.getItem('sessionId') || generateSessionId();
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch('/api/customer/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` })
-        },
-        body: JSON.stringify({
-          productId: product._id,
-          quantity,
-          size: selectedSize || null,
-          color: selectedColor || null,
-          ...(token ? {} : { sessionId })
-        })
-      });
+       
+      // const response = await fetch('/api/customer/cart', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     ...(token && { 'Authorization': `Bearer ${token}` })
+      //   },
+      //   body: JSON.stringify({
+      //     productId: product._id,
+      //     quantity,
+      //     size: selectedSize || null,
+      //     color: selectedColor || null,
+      //     ...(token ? {} : { sessionId })
+      //   })
+      // });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          // Show success message
-          alert('Product added to cart successfully!');
-        } else {
-          setError(result.message || 'Failed to add product to cart');
-        }
-      } else {
-        setError('Failed to add product to cart');
-      }
+      console.log("Product Id :::",product);
+      console.log("Product Id :::",relatedProduct);
+      console.log("Quantity :::",quantity);
+      console.log("Size :::",selectedSize);
+      console.log("Color :::",selectedColor);
+      console.log("Session Id :::",sessionId);
+      await dispatch(addToCart({
+        productId: product.id || '',
+        quantity: quantity,
+        size: selectedSize || undefined,
+        color: selectedColor || undefined,
+        sessionId: sessionId || undefined,
+      }));
     } catch (error) {
       console.error('Failed to add product to cart:', error);
       setError('Failed to add product to cart');
@@ -520,45 +522,52 @@ export default function ProductDetail() {
         </div>
 
         {/* Related Products */}
-        {relatedProduct && relatedProduct.length > 0 && (
+        {(relatedProduct && relatedProduct.length > 0) || relatedLoading ? (
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProduct.map((relatedProduct) => (
-                <Link
-                  key={relatedProduct._id}
-                  href={`/products/${relatedProduct._id}`}
-                  className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
-                >
-                  <div className="aspect-square relative">
-                    {relatedProduct.images && relatedProduct.images.length > 0 ? (
-                      <Image
-                        src={relatedProduct.images[0]}
-                        alt={relatedProduct.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {relatedProduct.name}
-                    </h3>
-                    <p className="text-lg font-bold text-gray-900">
-                      ${relatedProduct.price.toFixed(2)}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            {relatedLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="ml-2 text-gray-600">Loading related products...</span>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {relatedProduct?.map((relatedProduct) => (
+                  <Link
+                    key={relatedProduct._id}
+                    href={`/products/${relatedProduct.id}`}
+                    className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+                  >
+                    <div className="aspect-square relative">
+                      {relatedProduct.images && relatedProduct.images.length > 0 ? (
+                        <Image
+                          src={relatedProduct.images[0]}
+                          alt={relatedProduct.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {relatedProduct.name}
+                      </h3>
+                      <p className="text-lg font-bold text-gray-900">
+                        ${relatedProduct.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        ) : null}
       </div>
 
       <Footer />
