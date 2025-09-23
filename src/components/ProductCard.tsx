@@ -104,8 +104,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      {/* <Link href={`/products/${product.id}`}> */}
-      <div>
+      <Link href={`/products/${product.id}`}>
+      {/* <Link> */}
         <div className="relative aspect-square overflow-hidden">
         {imageUrl && isCloudinaryImage(imageUrl) && !imageError ? (
         <Image
@@ -133,16 +133,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         </div>
       )}
         </div>
-      </div>
+      </Link>
 
       <div className="p-4">
         <div className="mb-2">
           {/* <Link href={`/products/${product.id}`}> */}
-          <div>
+          <Link href={`/products/${product.id}`}>
             <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 line-clamp-2">
               {product.name}
             </h3>
-          </div>
+          </Link>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
             {product.description}
           </p>

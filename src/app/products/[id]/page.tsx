@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 interface Product {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   price: number;
@@ -39,7 +39,7 @@ interface Product {
     name: string;
   }[];
   tags: {
-    id: string;
+    _id: string;
     name: string;
   }[];
   store: {
@@ -48,14 +48,17 @@ interface Product {
     image: string;
     description: string;
   };
-  relatedProducts: Product[];
+  // relatedProducts: Product[];
 }
+
+type RelatedProducts = Product[];
 
 export default function ProductDetail() {
   const params = useParams();
   const productId = params.id as string;
   
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProduct, setRelatedProduct] = useState<RelatedProducts | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>('');
@@ -87,11 +90,47 @@ export default function ProductDetail() {
     }
   };
 
+  const loadRelatedProduct = async (tags: string[]) => {
+    try {
+      setLoading(true);
+  
+      // Join multiple tags as query params
+      const query = tags.map(tag => `tags=${encodeURIComponent(tag)}`).join("&");
+  
+      const response = await fetch(`/api/customer/products/related?${query}`);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setRelatedProduct(result.data.products); // 👈 use correct response key
+        } else {
+          setError('No related products found');
+        }
+      } else {
+        setError('Failed to load related products');
+      }
+    } catch (error) {
+      console.error('Failed to load related products:', error);
+      setError('Failed to load related products');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   useEffect(() => {
     if (productId) {
       loadProduct();
+      // loadRelatedProduct();
     }
-  }, [productId,loadProduct]);
+  }, [productId]);
+
+  useEffect(() => {
+    if (product && product.tags && product.tags.length > 0) {
+      const tagNames = product.tags.map(tag => tag._id); // or tag._id depending on backend
+      loadRelatedProduct(tagNames);
+    }
+  }, [product]);
 
   
 
@@ -112,7 +151,7 @@ export default function ProductDetail() {
           ...(token && { 'Authorization': `Bearer ${token}` })
         },
         body: JSON.stringify({
-          productId: product.id,
+          productId: product._id,
           quantity,
           size: selectedSize || null,
           color: selectedColor || null,
@@ -371,7 +410,7 @@ export default function ProductDetail() {
               <div className="flex items-center">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 border border-gray-300 rounded-l-lg flex items-center justify-center hover:bg-gray-50"
+                  className="w-10 h-10 border text-black border-gray-300 rounded-l-lg flex items-center justify-center hover:bg-gray-50"
                 >
                   -
                 </button>
@@ -379,13 +418,13 @@ export default function ProductDetail() {
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 h-10 border-t border-b border-gray-300 text-center"
+                  className="w-16 h-10 text-black border-t border-b border-gray-300 text-center"
                   min="1"
                   max={product.stock}
                 />
                 <button
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="w-10 h-10 border border-gray-300 rounded-r-lg flex items-center justify-center hover:bg-gray-50"
+                  className="w-10 h-10 border text-black border-gray-300 rounded-r-lg flex items-center justify-center hover:bg-gray-50"
                 >
                   +
                 </button>
@@ -427,11 +466,11 @@ export default function ProductDetail() {
             <div className="mt-8 space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Brand:</span>
-                <span className="font-medium">{product.brand.name}</span>
+                <span className="font-medium text-gray-600">{product.brand.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Category:</span>
-                <span className="font-medium">{product.category.name}</span>
+                <span className="font-medium text-gray-600">{product.category.name}</span>
               </div>
               {product.material && product.material.length > 0 && (
                 <div className="flex justify-between">
@@ -444,7 +483,7 @@ export default function ProductDetail() {
                   <span className="text-gray-600">Tags:</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {product.tags.map((tag) => (
-                      <span key={tag.id} className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
+                      <span key={tag._id} className="px-2 py-1 bg-gray-200 text-gray-700 text-sm rounded">
                         {tag.name}
                       </span>
                     ))}
@@ -467,12 +506,12 @@ export default function ProductDetail() {
                   />
                 )}
                 <div>
-                  <Link
-                    href={`/stores/${product.store.id}`}
+                  <div
+                    // href={`/stores/${product.store.id}`}
                     className="font-medium text-blue-600 hover:text-blue-700"
                   >
                     {product.store.name}
-                  </Link>
+                  </div>
                   <p className="text-sm text-gray-600">{product.store.description}</p>
                 </div>
               </div>
@@ -481,14 +520,14 @@ export default function ProductDetail() {
         </div>
 
         {/* Related Products */}
-        {product.relatedProducts && product.relatedProducts.length > 0 && (
+        {relatedProduct && relatedProduct.length > 0 && (
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {product.relatedProducts.map((relatedProduct) => (
+              {relatedProduct.map((relatedProduct) => (
                 <Link
-                  key={relatedProduct.id}
-                  href={`/products/${relatedProduct.id}`}
+                  key={relatedProduct._id}
+                  href={`/products/${relatedProduct._id}`}
                   className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
                 >
                   <div className="aspect-square relative">

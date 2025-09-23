@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     // Load featured products and categories
     dispatch(fetchFeaturedProducts());
-    dispatch(fetchCategories());
+    // dispatch(fetchCategories());
   }, [dispatch]);
 
   if (isLoading) {
