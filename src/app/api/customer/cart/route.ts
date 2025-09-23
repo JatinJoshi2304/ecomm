@@ -160,7 +160,7 @@ export async function POST(req: NextRequest) {
       await existingItem.save();
     } else {
       // Create new cart item
-      await CartItem.create({
+      const newItem = await CartItem.create({
         cartId: cart._id,
         productId,
         quantity,
@@ -168,7 +168,13 @@ export async function POST(req: NextRequest) {
         size: size || null,
         color: color || null,
       });
+
+      cart.items.push(newItem._id);
+      await cart.save();
+
     }
+
+    
 
     // Update cart totals
     await updateCartTotals(cart._id);

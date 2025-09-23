@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -51,10 +52,13 @@ interface Order {
   updatedAt: string;
 }
 
-export default function OrderDetailsPage({ params }: { params: { orderId: string } }) {
+export default function OrderDetailsPage({ params }: { params: Promise<{ orderId: string }> }) {
+  const unwrappedParams = React.use(params); 
+  const { orderId } = unwrappedParams;
+
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-  
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -64,15 +68,14 @@ export default function OrderDetailsPage({ params }: { params: { orderId: string
       return;
     }
     loadOrderDetails();
-  }, [isAuthenticated, router, params.orderId]);
+  }, [isAuthenticated, router, orderId]);
 
   const loadOrderDetails = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/customer/orders/${params.orderId}`, {
+      const response = await fetch(`/api/customer/orders/${orderId}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -243,11 +246,30 @@ export default function OrderDetailsPage({ params }: { params: { orderId: string
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div key={item._id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                    <img
-                      src={item.productId.images[0] || '/placeholder-image.jpg'}
-                      alt={item.productId.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
+                    {item.productId.images[0] ? (
+                                    <img
+                                      src={item.productId.images[0]}
+                                      alt={item.productId.name}
+                                      className="w-12 h-12 object-cover rounded"
+                                      // onError={() => setImageError(true)}
+                                    />
+                                  ) : (
+                                    <div className="w-12 h-12 bg-gray-200 flex items-center justify-center rounded">
+                                      <svg
+                                        className="w-6 h-6 text-gray-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                        />
+                                      </svg>
+                                    </div>
+                                  )}
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-medium text-gray-900 truncate">
                         {item.productId.name}

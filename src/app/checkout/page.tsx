@@ -19,7 +19,7 @@ interface Address {
 }
 
 interface CartItem {
-  _id: string;
+  id: string;
   product: {
     _id: string;
     name: string;
@@ -47,8 +47,8 @@ interface Cart {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-  
+  const { isAuthenticated, user, token } = useAppSelector((state) => state.auth);
+  const {sessionId} = useAppSelector((state)=>state.cart)
   const [cart, setCart] = useState<Cart | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -78,7 +78,6 @@ export default function CheckoutPage() {
 
   const loadCart = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('/api/customer/cart', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -102,7 +101,6 @@ export default function CheckoutPage() {
 
   const loadAddresses = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('/api/customer/addresses', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -134,7 +132,6 @@ export default function CheckoutPage() {
   const handleNewAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('/api/customer/addresses', {
         method: 'POST',
         headers: {
@@ -178,7 +175,6 @@ export default function CheckoutPage() {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('/api/customer/checkout', {
         method: 'POST',
         headers: {
@@ -443,7 +439,7 @@ export default function CheckoutPage() {
               
               <div className="space-y-3 mb-6">
                 {cart.items.map((item) => (
-                  <div key={item._id} className="flex items-center space-x-3">
+                  <div key={item.id} className="flex items-center space-x-3">
                     <img
                       src={item.product.images[0] || '/placeholder-image.jpg'}
                       alt={item.product.name}

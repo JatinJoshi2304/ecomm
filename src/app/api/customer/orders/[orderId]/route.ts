@@ -5,6 +5,7 @@ import { errorResponse, successResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import Order from "@/models/order.model";
 import "@/models/index";
+import { verifyToken } from "@/lib/jwt";
 
 export async function GET(
   req: NextRequest,
@@ -12,12 +13,22 @@ export async function GET(
 ) {
   try {
     // Check authentication
-    const authResult = await authMiddleware(["customer"])(req);
-    if (authResult) return authResult;
+    // const authResult = await authMiddleware(["customer"])(req);
+    // if (authResult) return authResult;
 
     await connectDB();
 
-    const userId = (req as any).user.id;
+    let userId: string | undefined;
+  
+    const authHeader = req.headers.get("authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const decoded = verifyToken(token);
+      if (decoded && decoded.role === "customer") {
+        userId = decoded.id;
+      }
+    }
+
     const { orderId } = params;
 
     // Get order with full details
@@ -33,7 +44,7 @@ export async function GET(
           populate: [
             { path: "size", model: "Size" },
             { path: "color", model: "Color" },
-            { path: "seller", model: "User", select: "name email" }
+            // { path: "seller", model: "User", select: "name email" }
           ]
         }
       })

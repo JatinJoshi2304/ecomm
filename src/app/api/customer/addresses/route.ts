@@ -5,16 +5,26 @@ import { errorResponse, successResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import Address from "@/models/address.model";
 import "@/models/index";
+import { verifyToken } from "@/lib/jwt";
 
 export async function GET(req: NextRequest) {
   try {
     // Check authentication
-    const authResult = await authMiddleware(["customer"])(req);
-    if (authResult) return authResult;
+    // const authResult = await authMiddleware(["customer"])(req);
+    // if (authResult) return authResult;
 
     await connectDB();
 
-    const userId = (req as any).user.id;
+    let userId: string | undefined;
+
+    const authHeader = req.headers.get("authorization");
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const decoded = verifyToken(token);
+      if (decoded && decoded.role === "customer") {
+        userId = decoded.id;
+      }
+    }
 
     // Get all addresses for the user
     const addresses = await Address.find({ userId }).sort({ isDefault: -1, createdAt: -1 });

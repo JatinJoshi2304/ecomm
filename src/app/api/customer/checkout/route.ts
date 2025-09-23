@@ -9,6 +9,8 @@ import Order from "@/models/order.model";
 import OrderItem from "@/models/orderItem.model";
 import Product from "@/models/product.model";
 import "@/models/index";
+import { generateOrderNumber } from "@/lib/generateOrderNumber";
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
           path: "productId",
           model: "Product",
           populate: [
-            { path: "seller", model: "User" },
+            // { path: "seller", model: "User" },
             { path: "size", model: "Size" },
             { path: "color", model: "Color" }
           ]
@@ -91,13 +93,15 @@ export async function POST(req: NextRequest) {
         price: cartItem.price,
         size: cartItem.size,
         color: cartItem.color,
-        sellerId: product.seller._id
+        sellerId: product.storeId
       });
     }
-
+    const ordernumber = await generateOrderNumber();
+    console.log("ordernumber ::",ordernumber);
     // Create order
     const order = new Order({
       customerId: userId,
+      orderNumber:ordernumber,
       shippingAddress,
       paymentMethod: "COD",
       paymentStatus: "pending",

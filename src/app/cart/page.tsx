@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCart, updateCartItem, removeFromCart, clearCart } from '@/store/slices/cartSlice';
+import { updateCartItem, removeFromCart, clearCart } from '@/store/slices/cartSlice';
 
 
 export default function CartPage() {
@@ -18,14 +18,6 @@ export default function CartPage() {
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
   const { sessionId } = useAppSelector((state) => state.cart);
 
-  useEffect(() => {
-    // Load cart using Redux
-    if (isAuthenticated && token) {
-      dispatch(fetchCart({ token }));
-    } else if (sessionId) {
-      dispatch(fetchCart({ sessionId }));
-    }
-  }, [dispatch, isAuthenticated, token, sessionId]);
 
 
   const updateItemQuantity = async (itemId: string, newQuantity: number) => {

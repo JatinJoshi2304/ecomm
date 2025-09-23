@@ -6,6 +6,7 @@ import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import Order from "@/models/order.model";
 import OrderItem from "@/models/orderItem.model";
 import "@/models/index";
+import Store from "@/models/store.model";
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,14 +22,13 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const status = searchParams.get('status');
 
-    // Build query to find orders containing items from this seller
-    const orderItemsQuery: any = { sellerId };
-    if (status) {
-      // We'll need to join with orders to filter by status
+    const store = await Store.findOne({ userId: sellerId });
+    if (!store) {
+      return NextResponse.json(errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Store not found"), { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND });
     }
-
     // Get order items for this seller
-    const orderItems = await OrderItem.find(orderItemsQuery)
+    console.log("sellerId ::",sellerId);
+    const orderItems = await OrderItem.find({sellerId:store._id})
       .populate({
         path: "orderId",
         match: status ? { orderStatus: status } : {},
@@ -142,10 +142,23 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    // Find seller store
+    const store = await Store.findOne({ userId: sellerId });
+    if (!store) {
+      return NextResponse.json(
+        errorResponse(
+          "NOT_FOUND",
+          RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND,
+          "Store not found"
+        ),
+        { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND }
+      );
+    }
+
     // Check if seller has items in this order
-    const hasItems = await OrderItem.findOne({ 
-      orderId, 
-      sellerId 
+    const hasItems = await OrderItem.findOne({
+      orderId,
+      sellerId: store._id, // ✅ use store._id same as GET API
     });
 
     if (!hasItems) {
@@ -170,12 +183,12 @@ export async function PATCH(req: NextRequest) {
         populate: {
           path: "productId",
           model: "Product",
-          select: "name",
+          select: "name price images",
           populate: [
             { path: "size", model: "Size", select: "name" },
-            { path: "color", model: "Color", select: "name" }
-          ]
-        }
+            { path: "color", model: "Color", select: "name hexCode" },
+          ],
+        },
       })
       .populate("customerId", "name email");
 
@@ -191,17 +204,12 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json(
-      successResponse(
-        "UPDATE",
-        order,
-        RESPONSE_MESSAGES.STATUS_CODES.SUCCESS
-      ),
+      successResponse("UPDATE", order, RESPONSE_MESSAGES.STATUS_CODES.SUCCESS),
       { status: RESPONSE_MESSAGES.STATUS_CODES.SUCCESS }
     );
-
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Something went wrong";
-    
+
     return NextResponse.json(
       errorResponse(
         "SERVER_ERROR",

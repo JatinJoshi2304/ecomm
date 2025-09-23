@@ -52,7 +52,7 @@ interface Order {
 
 export default function CustomerOrdersPage() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user, token } = useAppSelector((state) => state.auth);
   
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ export default function CustomerOrdersPage() {
 
   const loadOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       const queryParams = new URLSearchParams();
       queryParams.append('page', currentPage.toString());
       queryParams.append('limit', '10');
@@ -78,7 +78,7 @@ export default function CustomerOrdersPage() {
         queryParams.append('status', selectedStatus);
       }
 
-      const response = await fetch(`/api/customer/orders?${queryParams.toString()}`, {
+      const response = await fetch(`/api/customer/orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -175,7 +175,7 @@ export default function CustomerOrdersPage() {
             >
               All Orders
             </button>
-            <button
+            {/* <button
               onClick={() => handleStatusFilter('pending')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 selectedStatus === 'pending'
@@ -224,7 +224,7 @@ export default function CustomerOrdersPage() {
               }`}
             >
               Delivered
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -267,9 +267,9 @@ export default function CustomerOrdersPage() {
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.orderStatus)}`}>
                         {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
                       </span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
+                      {/* <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
                         Payment: {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
 
@@ -280,11 +280,37 @@ export default function CustomerOrdersPage() {
                       <div className="space-y-3">
                         {order.items.map((item) => (
                           <div key={item._id} className="flex items-center space-x-3">
-                            <img
+                            {/* <img
                               src={item.productId.images[0] || '/placeholder-image.jpg'}
                               alt={item.productId.name}
                               className="w-12 h-12 object-cover rounded"
-                            />
+                            /> */}
+
+                            {item.productId.images[0] ? (
+                                    <img
+                                      src={item.productId.images[0]}
+                                      alt={item.productId.name}
+                                      className="w-12 h-12 object-cover rounded"
+                                      // onError={() => setImageError(true)}
+                                    />
+                                  ) : (
+                                    <div className="w-12 h-12 bg-gray-200 flex items-center justify-center rounded">
+                                      <svg
+                                        className="w-6 h-6 text-gray-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                        />
+                                      </svg>
+                                    </div>
+                                  )}
+                            
                             <div className="flex-1 min-w-0">
                               <h5 className="text-sm font-medium text-gray-900 truncate">
                                 {item.productId.name}

@@ -232,8 +232,8 @@ export default function AddressManagementPage() {
                     type="text"
                     required
                     value={newAddress.name}
-                    onChange={(e) => setNewAddress({...newAddress, name: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
+                    className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -244,12 +244,12 @@ export default function AddressManagementPage() {
                     type="tel"
                     required
                     value={newAddress.phone}
-                    onChange={(e) => setNewAddress({...newAddress, phone: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
+                    className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Street Address *
@@ -258,11 +258,11 @@ export default function AddressManagementPage() {
                   type="text"
                   required
                   value={newAddress.street}
-                  onChange={(e) => setNewAddress({...newAddress, street: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                  className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -272,8 +272,8 @@ export default function AddressManagementPage() {
                     type="text"
                     required
                     value={newAddress.city}
-                    onChange={(e) => setNewAddress({...newAddress, city: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                    className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -284,8 +284,8 @@ export default function AddressManagementPage() {
                     type="text"
                     required
                     value={newAddress.state}
-                    onChange={(e) => setNewAddress({...newAddress, state: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                    className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -296,12 +296,12 @@ export default function AddressManagementPage() {
                     type="text"
                     required
                     value={newAddress.zipCode}
-                    onChange={(e) => setNewAddress({...newAddress, zipCode: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onChange={(e) => setNewAddress({ ...newAddress, zipCode: e.target.value })}
+                    className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Country
@@ -309,30 +309,30 @@ export default function AddressManagementPage() {
                 <input
                   type="text"
                   value={newAddress.country}
-                  onChange={(e) => setNewAddress({...newAddress, country: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })}
+                  className="w-full text-black border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div className="flex items-center">
                 <input
                   type="checkbox"
                   id="isDefault"
                   checked={newAddress.isDefault}
-                  onChange={(e) => setNewAddress({...newAddress, isDefault: e.target.checked})}
+                  onChange={(e) => setNewAddress({ ...newAddress, isDefault: e.target.checked })}
                   className="mr-2"
                 />
                 <label htmlFor="isDefault" className="text-sm text-gray-700">
                   Set as default address
                 </label>
               </div>
-              
+
               <div className="flex gap-3">
                 <button
                   type="submit"
                   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  {editingAddress ? 'Update Address' : 'Add Address'}
+                  {editingAddress ? "Update Address" : "Add Address"}
                 </button>
                 <button
                   type="button"
@@ -343,6 +343,7 @@ export default function AddressManagementPage() {
                 </button>
               </div>
             </form>
+
           </div>
         )}
 

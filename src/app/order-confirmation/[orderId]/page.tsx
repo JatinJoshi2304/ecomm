@@ -63,7 +63,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
       return;
     }
     loadOrderDetails();
-  }, [isAuthenticated, router, params.orderId]);
+  }, [isAuthenticated, router]);
 
   const loadOrderDetails = async () => {
     try {
