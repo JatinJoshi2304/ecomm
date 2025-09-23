@@ -159,12 +159,6 @@ export default function ProductDetail() {
       //   })
       // });
 
-      console.log("Product Id :::",product);
-      console.log("Product Id :::",relatedProduct);
-      console.log("Quantity :::",quantity);
-      console.log("Size :::",selectedSize);
-      console.log("Color :::",selectedColor);
-      console.log("Session Id :::",sessionId);
       await dispatch(addToCart({
         productId: product.id || '',
         quantity: quantity,
@@ -178,12 +172,6 @@ export default function ProductDetail() {
     } finally {
       setIsAddingToCart(false);
     }
-  };
-
-  const generateSessionId = () => {
-    const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('sessionId', sessionId);
-    return sessionId;
   };
 
   const renderStars = (rating: number) => {

@@ -4,7 +4,7 @@ import User from "@/models/User";
 import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 
-// PUT /api/admin/customer/[id]/status - Update customer status
+// PUT /api/admin/seller/[id]/approval - Approve or reject seller
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -15,28 +15,31 @@ export async function PUT(
     const { id } = await params;
     const { status } = await req.json();
 
-    if (!status || !['active', 'inactive', 'suspended'].includes(status)) {
+    if (!status || !['approved', 'rejected'].includes(status)) {
       return NextResponse.json(
         errorResponse("VALIDATION_FAILED", RESPONSE_MESSAGES.STATUS_CODES.BAD_REQUEST, "Invalid status provided"),
         { status: RESPONSE_MESSAGES.STATUS_CODES.BAD_REQUEST }
       );
     }
 
-    const customer = await User.findByIdAndUpdate(
+    const seller = await User.findByIdAndUpdate(
       id,
-      { status },
+      { 
+        status,
+        approvedAt: status === 'approved' ? new Date() : null
+      },
       { new: true }
     );
 
-    if (!customer) {
+    if (!seller) {
       return NextResponse.json(
-        errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Customer not found"),
+        errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Seller not found"),
         { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND }
       );
     }
 
     return NextResponse.json(
-      successResponse("UPDATE", { customer }, RESPONSE_MESSAGES.STATUS_CODES.SUCCESS),
+      successResponse("UPDATE", { seller }, RESPONSE_MESSAGES.STATUS_CODES.SUCCESS),
       { status: RESPONSE_MESSAGES.STATUS_CODES.SUCCESS }
     );
 

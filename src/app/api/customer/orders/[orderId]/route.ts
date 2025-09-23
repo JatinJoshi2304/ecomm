@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
-import { authMiddleware } from "@/middlewares/auth";
 import { errorResponse, successResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import Order from "@/models/order.model";

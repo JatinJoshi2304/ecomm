@@ -567,6 +567,7 @@ export default function AdminAddProductPage() {
                       <Image
                         src={preview}
                         alt={`Preview ${index + 1}`}
+                        fill
                         className="w-full h-32 object-cover rounded-lg border"
                       />
                     </div>

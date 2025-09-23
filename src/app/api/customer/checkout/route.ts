@@ -7,7 +7,6 @@ import Cart from "@/models/cart.model";
 import CartItem from "@/models/cartItem.model";
 import Order from "@/models/order.model";
 import OrderItem from "@/models/orderItem.model";
-import Product from "@/models/product.model";
 import "@/models/index";
 import { generateOrderNumber } from "@/lib/generateOrderNumber";
 

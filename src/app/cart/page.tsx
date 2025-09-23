@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
@@ -15,7 +15,7 @@ export default function CartPage() {
   
   const dispatch = useAppDispatch();
   const { cart, isLoading, error } = useAppSelector((state) => state.cart);
-  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { sessionId } = useAppSelector((state) => state.cart);
 
 

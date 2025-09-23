@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppSelector } from '@/store/hooks';
+import Image from 'next/image';
 
 interface Address {
   _id: string;
@@ -47,8 +48,8 @@ interface Cart {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { isAuthenticated, user, token } = useAppSelector((state) => state.auth);
-  const {sessionId} = useAppSelector((state)=>state.cart)
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+  // const {sessionId} = useAppSelector((state)=>state.cart)
   const [cart, setCart] = useState<Cart | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -196,6 +197,7 @@ export default function CheckoutPage() {
         setError(errorData.message || 'Checkout failed');
       }
     } catch (error) {
+      console.log(error);
       setError('Something went wrong. Please try again.');
     } finally {
       setCheckoutLoading(false);
@@ -440,9 +442,11 @@ export default function CheckoutPage() {
               <div className="space-y-3 mb-6">
                 {cart.items.map((item) => (
                   <div key={item.id} className="flex items-center space-x-3">
-                    <img
+                    <Image
                       src={item.product.images[0] || '/placeholder-image.jpg'}
                       alt={item.product.name}
+                      width={40}
+                      height={40}
                       className="w-12 h-12 object-cover rounded"
                     />
                     <div className="flex-1 min-w-0">

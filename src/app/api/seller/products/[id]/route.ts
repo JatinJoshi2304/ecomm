@@ -7,9 +7,10 @@ import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import cloudinary from "@/config/cloudinary";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
+    const { id } = await params;
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(errorResponse("UNAUTHORIZED", RESPONSE_MESSAGES.STATUS_CODES.UNAUTHORIZED), { status: RESPONSE_MESSAGES.STATUS_CODES.UNAUTHORIZED });
@@ -40,7 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const product = await Product.findOneAndUpdate(
-      { _id: params.id, storeId: store._id },
+      { _id: id, storeId: store._id },
       updateData,
       { new: true }
     );
@@ -58,9 +59,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 // DELETE /api/seller/products/:id
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
       await connectDB();
+      const { id } = await params;
       const authHeader = req.headers.get("authorization");
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return NextResponse.json(errorResponse("UNAUTHORIZED", RESPONSE_MESSAGES.STATUS_CODES.UNAUTHORIZED), { status: RESPONSE_MESSAGES.STATUS_CODES.UNAUTHORIZED });
@@ -76,7 +78,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
         return NextResponse.json(errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Store not found"), { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND });
       }
   
-      const deleted = await Product.findOneAndDelete({ _id: params.id, storeId: store._id });
+      const deleted = await Product.findOneAndDelete({ _id: id, storeId: store._id });
       if (!deleted) {
         return NextResponse.json(errorResponse("NOT_FOUND", RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND, "Product not found"), { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND });
       }

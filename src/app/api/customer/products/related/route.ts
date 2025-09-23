@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
-import Category from "@/models/category.model";
+// import Category from "@/models/category.model";
 import Product from "@/models/product.model";
 import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const tagsParam = searchParams.get("tags"); // e.g. ?tags=summer,casual
     const includeCount = searchParams.get("includeCount") === "true";
 
-    let filter: any = {};
+    const filter: any = {};
 
     if (tagsParam) {
       const tags = tagsParam.split(",").map(tag => tag.trim());
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
 
     const products = await Product.find(filter).sort({ name: 1 });
 
-    let responseData: any = {
+    const responseData: any = {
       products,
       count: products.length,
     };

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppSelector } from '@/store/hooks';
+import Image from 'next/image';
 
 interface OrderItem {
   _id: string;
@@ -287,9 +288,11 @@ export default function CustomerOrdersPage() {
                             /> */}
 
                             {item.productId.images[0] ? (
-                                    <img
+                                    <Image
                                       src={item.productId.images[0]}
                                       alt={item.productId.name}
+                                      width={40}
+                                      height={40}
                                       className="w-12 h-12 object-cover rounded"
                                       // onError={() => setImageError(true)}
                                     />

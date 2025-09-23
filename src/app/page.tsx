@@ -6,12 +6,12 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchFeaturedProducts, fetchCategories } from '@/store/slices/productSlice';
+import { fetchFeaturedProducts } from '@/store/slices/productSlice';
 
 
 export default function Home() {
   const dispatch = useAppDispatch();
-  const { featuredProducts, categories, isLoading } = useAppSelector((state) => state.product);
+  const { featuredProducts, isLoading } = useAppSelector((state) => state.product);
 
   useEffect(() => {
     // Load featured products and categories

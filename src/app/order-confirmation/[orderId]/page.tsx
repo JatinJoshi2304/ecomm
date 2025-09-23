@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppSelector } from '@/store/hooks';
+import Image from 'next/image';
 
 interface OrderItem {
   _id: string;
@@ -50,9 +51,10 @@ interface Order {
   updatedAt: string;
 }
 
-export default function OrderConfirmationPage({ params }: { params: { orderId: string } }) {
+export default function OrderConfirmationPage({ params }: { params: Promise<{ orderId: string }> }) {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { orderId } = use(params);
   
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,12 +65,12 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
       return;
     }
     loadOrderDetails();
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, orderId]);
 
   const loadOrderDetails = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/customer/orders/${params.orderId}`, {
+      const response = await fetch(`/api/customer/orders/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -109,7 +111,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Order not found</h1>
-            <p className="text-gray-600 mb-8">The order you're looking for doesn't exist.</p>
+            <p className="text-gray-600 mb-8">The order you&apos;re looking for doesn&apos;t exist.</p>
             <Link
               href="/customer/orders"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -137,7 +139,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Order Confirmed!</h1>
           <p className="text-xl text-gray-600 mb-2">
-            Thank you for your order. We've received your order and will process it shortly.
+            Thank you for your order. We&apos;ve received your order and will process it shortly.
           </p>
           <p className="text-lg text-gray-600">
             Your order number is <span className="font-semibold text-blue-600">#{order.orderNumber}</span>
@@ -202,9 +204,11 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
           <div className="space-y-4">
             {order.items.map((item) => (
               <div key={item._id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
-                <img
+                <Image
                   src={item.productId.images[0] || '/placeholder-image.jpg'}
                   alt={item.productId.name}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 object-cover rounded"
                 />
                 <div className="flex-1 min-w-0">
@@ -232,7 +236,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
 
         {/* What's Next */}
         <div className="bg-blue-50 rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">What's Next?</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">What&apos;s Next?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -240,7 +244,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
               </div>
               <h3 className="font-medium text-gray-900 mb-2">Order Confirmation</h3>
               <p className="text-sm text-gray-600">
-                You'll receive an email confirmation with your order details.
+                You&apos;ll receive an email confirmation with your order details.
               </p>
             </div>
             <div className="text-center">
@@ -249,7 +253,7 @@ export default function OrderConfirmationPage({ params }: { params: { orderId: s
               </div>
               <h3 className="font-medium text-gray-900 mb-2">Processing</h3>
               <p className="text-sm text-gray-600">
-                We'll prepare your order and update you on the status.
+                We&apos;ll prepare your order and update you on the status.
               </p>
             </div>
             <div className="text-center">

@@ -521,6 +521,8 @@ export default function AddProductPage() {
             <Image
               src={preview}
               alt={`Preview ${index + 1}`}
+              width={40}
+              height={40}
               className="w-full h-32 object-cover rounded-lg border"
             />
           </div>

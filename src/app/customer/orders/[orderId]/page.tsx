@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppSelector } from '@/store/hooks';
+import Image from 'next/image';
 
 interface OrderItem {
   _id: string;
@@ -175,7 +176,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Order not found</h1>
-            <p className="text-gray-600 mb-8">The order you're looking for doesn't exist or you don't have permission to view it.</p>
+            <p className="text-gray-600 mb-8">The order you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view it.</p>
             <Link
               href="/customer/orders"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -247,9 +248,11 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                 {order.items.map((item) => (
                   <div key={item._id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
                     {item.productId.images[0] ? (
-                                    <img
+                                    <Image
                                       src={item.productId.images[0]}
                                       alt={item.productId.name}
+                                      width={40}
+                                      height={40}
                                       className="w-12 h-12 object-cover rounded"
                                       // onError={() => setImageError(true)}
                                     />

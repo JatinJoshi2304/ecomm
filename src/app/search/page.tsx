@@ -67,6 +67,8 @@ export default function SearchPage() {
   useEffect(() => {
     loadCategories();
     loadBrands();
+    console.log(categories);
+    console.log(brands);
   }, []);
 
   useEffect(() => {
@@ -134,13 +136,13 @@ export default function SearchPage() {
     }
   };
 
-  const handleFilterChange = (key: keyof SearchFilters, value: string | number) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value,
-      page: 1 // Reset to first page when filters change
-    }));
-  };
+  // const handleFilterChange = (key: keyof SearchFilters, value: string | number) => {
+  //   setFilters(prev => ({
+  //     ...prev,
+  //     [key]: value,
+  //     page: 1 // Reset to first page when filters change
+  //   }));
+  // };
 
   const handlePageChange = (page: number) => {
     setFilters(prev => ({
@@ -178,6 +180,7 @@ export default function SearchPage() {
       console.error('Failed to add product to cart:', error);
     }
   };
+
 
   const generateSessionId = () => {
     const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
