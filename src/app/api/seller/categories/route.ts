@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
-import Material from "@/models/material.model";
+import Category from "@/models/category.model";
 import { successResponse, errorResponse } from "@/lib/response";
 import { RESPONSE_MESSAGES } from "@/constants/responseMessages";
 import { verifyToken } from "@/lib/jwt";
 
-// GET /api/seller/materials - Get all materials
+// GET /api/seller/categories - Get all brands
 export async function GET() {
   try {
     await connectDB();
 
-    const materials = await Material.find().sort({ name: 1 });
+    const categories = await Category.find().sort({ name: 1 });
 
     return NextResponse.json(
-      successResponse("FETCH", { materials }, RESPONSE_MESSAGES.STATUS_CODES.SUCCESS),
+      successResponse("FETCH", { categories }, RESPONSE_MESSAGES.STATUS_CODES.SUCCESS),
       { status: RESPONSE_MESSAGES.STATUS_CODES.SUCCESS }
     );
 
@@ -26,7 +26,7 @@ export async function GET() {
   }
 }
 
-// POST /api/seller/materials
+// POST /api/seller/categories
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -59,18 +59,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const existingMaterial = await Material.findOne({ name });
-    if (existingMaterial) {
+    // ✅ Check for duplicate brand
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
       return NextResponse.json(
-        errorResponse("VALIDATION_FAILED", RESPONSE_MESSAGES.STATUS_CODES.BAD_REQUEST, "Material already exists"),
+        errorResponse("VALIDATION_FAILED", RESPONSE_MESSAGES.STATUS_CODES.BAD_REQUEST, "Category already exists"),
         { status: RESPONSE_MESSAGES.STATUS_CODES.BAD_REQUEST }
       );
     }
 
-    const material = await Material.create({ name, description });
+    // ✅ Create brand
+    const category = await Category.create({ name, description });
 
     return NextResponse.json(
-      successResponse("CREATE", material, RESPONSE_MESSAGES.STATUS_CODES.CREATED),
+      successResponse("CREATE", category, RESPONSE_MESSAGES.STATUS_CODES.CREATED),
       { status: RESPONSE_MESSAGES.STATUS_CODES.CREATED }
     );
 

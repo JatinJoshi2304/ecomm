@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectDB } from "@/config/db";
 import Brand from "@/models/brand.model";
 import { successResponse, errorResponse } from "@/lib/response";

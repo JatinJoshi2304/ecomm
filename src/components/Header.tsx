@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const searchQuery = ''
   const router = useRouter();
   
   const dispatch = useAppDispatch();
@@ -31,12 +31,12 @@ export default function Header() {
     }
   }, [dispatch, isAuthenticated, token, sessionId]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (searchQuery.trim()) {
+  //     router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  //   }
+  // };
 
   const handleLogout = async () => {
     try {

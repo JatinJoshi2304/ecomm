@@ -53,7 +53,7 @@ interface Order {
 
 export default function CustomerOrdersPage() {
   const router = useRouter();
-  const { isAuthenticated, user, token } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
   
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,18 +118,18 @@ export default function CustomerOrdersPage() {
     }
   };
 
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'paid':
-        return 'bg-green-100 text-green-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // const getPaymentStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case 'pending':
+  //       return 'bg-yellow-100 text-yellow-800';
+  //     case 'paid':
+  //       return 'bg-green-100 text-green-800';
+  //     case 'failed':
+  //       return 'bg-red-100 text-red-800';
+  //     default:
+  //       return 'bg-gray-100 text-gray-800';
+  //   }
+  // };
 
   const handleStatusFilter = (status: string) => {
     setSelectedStatus(status);
