@@ -335,7 +335,7 @@ export default function CheckoutPage() {
                             Phone *
                           </label>
                           <Field
-                            type="tel"
+                            type="number"
                             name="phone"
                             className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
@@ -381,7 +381,7 @@ export default function CheckoutPage() {
                             ZIP Code *
                           </label>
                           <Field
-                            type="text"
+                            type="number"
                             name="zipCode"
                             className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
