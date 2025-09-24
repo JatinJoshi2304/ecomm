@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
           populate: [
             { path: "size", model: "Size", select: "name" },
             { path: "color", model: "Color", select: "name hexCode" },
-            { path: "seller", model: "User", select: "name email" }
+            // { path: "seller", model: "User", select: "name email" }
           ]
         }
       })
@@ -179,7 +179,7 @@ export async function PATCH(req: NextRequest) {
           populate: [
             { path: "size", model: "Size", select: "name" },
             { path: "color", model: "Color", select: "name" },
-            { path: "seller", model: "User", select: "name email" }
+            // { path: "seller", model: "User", select: "name email" }
           ]
         }
       })

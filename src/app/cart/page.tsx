@@ -271,15 +271,15 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Items ({cart.totalItems})</span>
-                  <span className="font-medium">${cart.totalPrice.toFixed(2)}</span>
+                  <span className="font-medium text-gray-600">${cart.totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium">Calculated at checkout</span>
+                  <span className="font-medium text-gray-600">Calculated at checkout</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">Calculated at checkout</span>
+                  <span className="font-medium text-gray-600">Calculated at checkout</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between">

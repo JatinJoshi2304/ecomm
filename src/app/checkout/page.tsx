@@ -190,7 +190,7 @@ export default function CheckoutPage() {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          router.push(`/order-confirmation/${result.data._id}`);
+          router.push(`/customer/orders`);
         }
       } else {
         const errorData = await response.json();

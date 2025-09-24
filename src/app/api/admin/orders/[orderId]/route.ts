@@ -29,7 +29,7 @@ export async function GET(
           populate: [
             { path: "size", model: "Size" },
             { path: "color", model: "Color" },
-            { path: "seller", model: "User", select: "name email" }
+            // { path: "seller", model: "User", select: "name email" }
           ]
         }
       })
