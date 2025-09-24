@@ -45,7 +45,7 @@ export default function Home() {
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
               Discover amazing products from trusted sellers. Shop with confidence and enjoy fast delivery.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 // href="/categories"
                 href="#"
@@ -60,7 +60,7 @@ export default function Home() {
               >
                 Search Products
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -101,12 +101,12 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Best Sellers</h2>
               <p className="text-lg text-gray-600">Most popular products</p>
             </div>
-            <Link
+            {/* <Link
               href="/search?sortBy=purchases&sortOrder=desc"
               className="text-blue-600 hover:text-blue-700 font-semibold"
             >
               View All →
-            </Link>
+            </Link> */}
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
