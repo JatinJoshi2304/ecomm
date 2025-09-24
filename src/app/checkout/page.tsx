@@ -6,6 +6,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAppSelector } from '@/store/hooks';
 import Image from 'next/image';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 interface Address {
   _id: string;
@@ -46,23 +48,34 @@ interface Cart {
   totalPrice: number;
 }
 
+const addressValidationSchema = Yup.object({
+  name: Yup.string()
+    .required('Full name is required')
+    .max(20, 'Name must be at most 20 characters'),
+  phone: Yup.string()
+    .required('Phone is required')
+    .matches(/^[0-9]{10}$/, 'Phone must be 10 digits'),
+  street: Yup.string().required('Street address is required'),
+  city: Yup.string()
+    .required('City is required')
+    .max(20, 'City must be at most 20 characters'),
+  state: Yup.string()
+    .required('State is required')
+    .max(20, 'State must be at most 20 characters'),
+  zipCode: Yup.string()
+    .required('ZIP Code is required')
+    .matches(/^[0-9]{6}$/, 'ZIP Code must be 6 digits'),
+  country: Yup.string().required('Country is required'),
+  isDefault: Yup.boolean(),
+});
+
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
-  // const {sessionId} = useAppSelector((state)=>state.cart)
   const [cart, setCart] = useState<Cart | null>(null);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const [newAddress, setNewAddress] = useState({
-    name: '',
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'India',
-    phone: '',
-    isDefault: false
-  });
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -130,8 +143,7 @@ export default function CheckoutPage() {
     setShowNewAddressForm(false);
   };
 
-  const handleNewAddressSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleNewAddressSubmit = async (values: Omit<Address, '_id'>) => {
     try {
       const response = await fetch('/api/customer/addresses', {
         method: 'POST',
@@ -139,7 +151,7 @@ export default function CheckoutPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(newAddress)
+        body: JSON.stringify(values)
       });
 
       if (response.ok) {
@@ -149,16 +161,6 @@ export default function CheckoutPage() {
           setAddresses([...addresses, createdAddress]);
           setSelectedAddress(createdAddress);
           setShowNewAddressForm(false);
-          setNewAddress({
-            name: '',
-            street: '',
-            city: '',
-            state: '',
-            zipCode: '',
-            country: 'India',
-            phone: '',
-            isDefault: false
-          });
         }
       }
     } catch (error) {
@@ -300,111 +302,122 @@ export default function CheckoutPage() {
               </button>
 
               {showNewAddressForm && (
-                <form onSubmit={handleNewAddressSubmit} className="mt-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={newAddress.name}
-                        onChange={(e) => setNewAddress({...newAddress, name: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={newAddress.phone}
-                        onChange={(e) => setNewAddress({...newAddress, phone: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Street Address *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newAddress.street}
-                      onChange={(e) => setNewAddress({...newAddress, street: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={newAddress.city}
-                        onChange={(e) => setNewAddress({...newAddress, city: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={newAddress.state}
-                        onChange={(e) => setNewAddress({...newAddress, state: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ZIP Code *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={newAddress.zipCode}
-                        onChange={(e) => setNewAddress({...newAddress, zipCode: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="isDefault"
-                      checked={newAddress.isDefault}
-                      onChange={(e) => setNewAddress({...newAddress, isDefault: e.target.checked})}
-                      className="mr-2"
-                    />
-                    <label htmlFor="isDefault" className="text-sm text-gray-700">
-                      Set as default address
-                    </label>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      type="submit"
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Add Address
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowNewAddressForm(false)}
-                      className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+                <Formik
+                  initialValues={{
+                    name: '',
+                    street: '',
+                    city: '',
+                    state: '',
+                    zipCode: '',
+                    country: 'India',
+                    phone: '',
+                    isDefault: false,
+                  }}
+                  validationSchema={addressValidationSchema}
+                  onSubmit={handleNewAddressSubmit}
+                >
+                  {({ isSubmitting }) => (
+                    <Form className="mt-4 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Full Name *
+                          </label>
+                          <Field
+                            type="text"
+                            name="name"
+                            className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <ErrorMessage name="name" component="p" className="text-red-500 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Phone *
+                          </label>
+                          <Field
+                            type="tel"
+                            name="phone"
+                            className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <ErrorMessage name="phone" component="p" className="text-red-500 text-sm" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Street Address *
+                        </label>
+                        <Field
+                          type="text"
+                          name="street"
+                          className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <ErrorMessage name="street" component="p" className="text-red-500 text-sm" />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            City *
+                          </label>
+                          <Field
+                            type="text"
+                            name="city"
+                            className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <ErrorMessage name="city" component="p" className="text-red-500 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            State *
+                          </label>
+                          <Field
+                            type="text"
+                            name="state"
+                            className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <ErrorMessage name="state" component="p" className="text-red-500 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            ZIP Code *
+                          </label>
+                          <Field
+                            type="text"
+                            name="zipCode"
+                            className="w-full border text-black border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <ErrorMessage name="zipCode" component="p" className="text-red-500 text-sm" />
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <Field
+                          type="checkbox"
+                          id="isDefault"
+                          name="isDefault"
+                          className="mr-2"
+                        />
+                        <label htmlFor="isDefault" className="text-sm text-gray-700">
+                          Set as default address
+                        </label>
+                      </div>
+                      <div className="flex gap-3">
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          {isSubmitting ? 'Adding...' : 'Add Address'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowNewAddressForm(false)}
+                          className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               )}
             </div>
 

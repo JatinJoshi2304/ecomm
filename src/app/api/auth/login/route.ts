@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const { email, password,sessionId } = await req.json();
-
+console.log("Login Session :::::",sessionId);
     // find user
     const user = await User.findOne({ email });
     if (!user) {

@@ -259,16 +259,6 @@ export default function ProductDetail() {
                 Home
               </Link>
             </li>
-            <li>
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-                <Link href={`/categories/${product.category.id}`} className="ml-1 text-gray-700 hover:text-blue-600 md:ml-2">
-                  {product.category.name}
-                </Link>
-              </div>
-            </li>
             <li aria-current="page">
               <div className="flex items-center">
                 <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -523,7 +513,7 @@ export default function ProductDetail() {
                 {relatedProduct?.map((relatedProduct) => (
                   <Link
                     key={relatedProduct._id}
-                    href={`/products/${relatedProduct.id}`}
+                    href={`/products/${relatedProduct._id}`}
                     className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
                   >
                     <div className="aspect-square relative">

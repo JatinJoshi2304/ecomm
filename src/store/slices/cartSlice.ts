@@ -190,6 +190,7 @@ export const removeFromCart = createAsyncThunk(
   'cart/removeFromCart',
   async (data: { itemId: string; sessionId?: string }, { getState, rejectWithValue }) => {
     try {
+      debugger
       const state = getState() as { auth: { token: string | null }; cart: CartState };
       const token = state.auth.token;
       const sessionId = data.sessionId || state.cart.sessionId;
@@ -202,9 +203,9 @@ export const removeFromCart = createAsyncThunk(
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const url = sessionId 
-        ? `/api/customer/cart/items/${data.itemId}?sessionId=${sessionId}`
-        : `/api/customer/cart/items/${data.itemId}`;
+      const url = token 
+        ? `/api/customer/cart/items/${data.itemId}`
+        : `/api/customer/cart/items/${data.itemId}?sessionId=${sessionId}`;
 
       const response = await fetch(url, {
         method: 'DELETE',

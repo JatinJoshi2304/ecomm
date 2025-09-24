@@ -84,17 +84,17 @@ export default function CartPage() {
     router.push('/checkout');
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50">
+  //       <Header />
+  //       <div className="flex items-center justify-center min-h-[60vh]">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  //       </div>
+  //       <Footer />
+  //     </div>
+  //   );
+  // }
 
   if (!cart || cart.items.length === 0) {
     return (

@@ -30,7 +30,6 @@ export interface RegisterData {
   name: string;
   email: string;
   password: string;
-  role: 'customer' | 'seller';
 }
 
 export interface AuthResponse {
@@ -42,6 +41,7 @@ export interface AuthResponse {
     role: string;
     token: string;
   };
+  error:string;
   message: string;
   statusCode: number;
 }
@@ -71,7 +71,7 @@ export const loginUser = createAsyncThunk(
       const data: AuthResponse = await response.json();
 
       if (!response.ok) {
-        return rejectWithValue(data.message || 'Login failed');
+        return rejectWithValue(data.error || 'Login failed');
       }
 
       return data;
@@ -96,7 +96,7 @@ export const registerUser = createAsyncThunk(
       const data: AuthResponse = await response.json();
 
       if (!response.ok) {
-        return rejectWithValue(data.message || 'Registration failed');
+        return rejectWithValue(data.error || 'Registration failed');
       }
 
       return data;
@@ -188,17 +188,6 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = {
-          _id: action.payload.data._id,
-          name: action.payload.data.name,
-          email: action.payload.data.email,
-          role: action.payload.data.role as 'customer' | 'seller' | 'admin',
-          isActive: true,
-          createdAt: '',
-          updatedAt: '',
-        };
-        state.token = action.payload.data.token;
-        state.isAuthenticated = true;
         state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {

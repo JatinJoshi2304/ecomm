@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         userId = decoded.id;
       }
     }
-
+console.log("user :", userId,"sessionId : ",sessionId);
     if (!userId && !sessionId) {
       return NextResponse.json(
         errorResponse(

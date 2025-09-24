@@ -67,13 +67,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     if (userId && cart.userId?.toString() !== userId) {
+      console.log("First one error")
+      
       return NextResponse.json(
         errorResponse("FORBIDDEN", RESPONSE_MESSAGES.STATUS_CODES.FORBIDDEN),
-        { status: RESPONSE_MESSAGES.STATUS_CODES.FORBIDDEN }
+        { status: RESPONSE_MESSAGES.STATUS_CODES.FORBIDDEN}
       );
     }
 
-    if (sessionId && cart.sessionId !== sessionId) {
+    if (!userId && (sessionId && cart.sessionId !== sessionId)) {
+      console.log("Second one error")
       return NextResponse.json(
         errorResponse("FORBIDDEN", RESPONSE_MESSAGES.STATUS_CODES.FORBIDDEN),
         { status: RESPONSE_MESSAGES.STATUS_CODES.FORBIDDEN }

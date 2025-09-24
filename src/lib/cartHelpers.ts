@@ -124,7 +124,7 @@ export async function mergeGuestCartWithUserCart(guestSessionId: string, userId:
   if (!userCart) {
     // Convert guest cart to user cart
     guestCart.userId = userId;
-    guestCart.sessionId = null;
+    guestCart.sessionId = guestSessionId;
     await guestCart.save();
     return guestCart;
   }
