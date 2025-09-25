@@ -12,6 +12,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  stock: number;
   images: string[];
   averageRating: number;
   reviewCount: number;

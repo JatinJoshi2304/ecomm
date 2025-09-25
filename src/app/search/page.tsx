@@ -8,10 +8,12 @@ import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 
 interface Product {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   description: string;
   price: number;
+  stock:number;
   images: string[];
   averageRating: number;
   reviewCount: number;
@@ -23,7 +25,7 @@ interface Product {
     id: string;
     name: string;
   };
-  store: {
+  store?: {
     id: string;
     name: string;
     image: string;
@@ -46,9 +48,8 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const currentPage = 1;
+  const totalPages = 1;
   const [categories, setCategories] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   
@@ -63,6 +64,7 @@ export default function SearchPage() {
     page: 1,
     limit: 12
   });
+  console.log("Products :::::",products);
 
   useEffect(() => {
     loadCategories();
@@ -108,25 +110,15 @@ export default function SearchPage() {
       setLoading(true);
       
       const queryParams = new URLSearchParams();
-      if (filters.query) queryParams.append('query', filters.query);
-      if (filters.category) queryParams.append('category', filters.category);
-      if (filters.brand) queryParams.append('brand', filters.brand);
-      if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
-      if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
-      if (filters.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
-      queryParams.append('page', filters.page.toString());
-      queryParams.append('limit', filters.limit.toString());
+      if (filters.query) queryParams.append('q', filters.query);
 
+      console.log("queryParams ::::::::",queryParams.toString())
       const response = await fetch(`/api/customer/products/search?${queryParams.toString()}`);
       
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          setProducts(result.data.products);
-          setTotalProducts(result.data.totalProducts);
-          setTotalPages(result.data.totalPages);
-          setCurrentPage(result.data.currentPage);
+          setProducts(result.data);
         }
       }
     } catch (error) {
@@ -151,6 +143,21 @@ export default function SearchPage() {
     }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      query: searchParams.get('q') || '',
+      category: searchParams.get('category') || '',
+      brand: searchParams.get('brand') || '',
+      minPrice: searchParams.get('minPrice') || '',
+      maxPrice: searchParams.get('maxPrice') || '',
+      sortBy: searchParams.get('sortBy') || 'createdAt',
+      sortOrder: searchParams.get('sortOrder') || 'desc',
+      page: Number(searchParams.get('page')) || 1,
+      limit: Number(searchParams.get('limit')) || 12,
+    }));
+  }, [searchParams]);
 
   const handleAddToCart = async (productId: string) => {
     try {
@@ -194,122 +201,7 @@ export default function SearchPage() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar */}
-          {/* <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
-              
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search
-                </label>
-                <input
-                  type="text"
-                  value={filters.query}
-                  onChange={(e) => handleFilterChange('query', e.target.value)}
-                  placeholder="Search products..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
-                </label>
-                <select
-                  value={filters.category}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">All Categories</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand
-                </label>
-                <select
-                  value={filters.brand}
-                  onChange={(e) => handleFilterChange('brand', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">All Brands</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.id}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Price Range
-                </label>
-                <div className="space-y-2">
-                  <input
-                    type="number"
-                    value={filters.minPrice}
-                    onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                    placeholder="Min Price"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <input
-                    type="number"
-                    value={filters.maxPrice}
-                    onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                    placeholder="Max Price"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sort By
-                </label>
-                <select
-                  value={`${filters.sortBy}-${filters.sortOrder}`}
-                  onChange={(e) => {
-                    const [sortBy, sortOrder] = e.target.value.split('-');
-                    handleFilterChange('sortBy', sortBy);
-                    handleFilterChange('sortOrder', sortOrder);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="createdAt-desc">Newest First</option>
-                  <option value="createdAt-asc">Oldest First</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="averageRating-desc">Highest Rated</option>
-                  <option value="averageRating-asc">Lowest Rated</option>
-                  <option value="purchases-desc">Best Selling</option>
-                </select>
-              </div>
-
-              <button
-                onClick={() => setFilters({
-                  query: '',
-                  category: '',
-                  brand: '',
-                  minPrice: '',
-                  maxPrice: '',
-                  sortBy: 'createdAt',
-                  sortOrder: 'desc',
-                  page: 1,
-                  limit: 12
-                })}
-                className="w-full text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Clear All Filters
-              </button>
-            </div>
-          </div> */}
-
+          
           {/* Products Grid */}
           <div className="flex-1">
             {/* Results Header */}
@@ -318,7 +210,7 @@ export default function SearchPage() {
                 {filters.query ? `Search results for "${filters.query}"` : 'All Products'}
               </h1>
               <p className="text-gray-600">
-                {loading ? 'Loading...' : `${totalProducts} products found`}
+                {loading ? 'Loading...' : `${products.length} products found`}
               </p>
             </div>
 
@@ -333,10 +225,28 @@ export default function SearchPage() {
             {!loading && products.length > 0 && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {products.map((product) => (
+                  {products.map((product,index) => (
                     <ProductCard
-                      key={product.id}
-                      product={product}
+                      key={index}
+                      showAddCart={false}
+                      product={{
+                        id: product._id || "",
+                        name: product.name,
+                        description: product.description,
+                        price: product.price,
+                        stock: product.stock,
+                        images: product.images,
+                        averageRating: 4.5, // Default rating
+                        reviewCount: 0, // Default review count
+                        category: {
+                          id: product.category.id,
+                          name: product.category.name,
+                        },
+                        brand: {
+                          id: product.brand.id,
+                          name: product.brand.name,
+                        }
+                      }}
                       onAddToCart={handleAddToCart}
                     />
                   ))}

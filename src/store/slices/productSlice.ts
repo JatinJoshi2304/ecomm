@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 // Types
 export interface Product {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
   description: string;
   price: number;
@@ -57,6 +58,7 @@ export interface Brand {
 export interface ProductState {
   products: Product[];
   featuredProducts: Product[];
+  recentProducts: Product[];
   categories: Category[];
   brands: Brand[];
   currentProduct: Product | null;
@@ -87,6 +89,7 @@ export interface SearchParams {
 const initialState: ProductState = {
   products: [],
   featuredProducts: [],
+  recentProducts: [],
   categories: [],
   brands: [],
   currentProduct: null,
@@ -114,6 +117,24 @@ console.log("Featured products data ::::", data);
       }
 
       return data.data.products.bestSelling;
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Network error');
+    }
+  }
+);
+
+export const fetchRecentProducts = createAsyncThunk(
+  'product/fetchRecentProducts',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/customer/products');
+      const data = await response.json();
+console.log("Recent Products ::::", data);
+      if (!response.ok) {
+        return rejectWithValue(data.message || 'Failed to fetch featured products');
+      }
+
+      return data.data;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Network error');
     }
@@ -268,6 +289,20 @@ const productSlice = createSlice({
         state.error = action.payload as string;
       });
 
+      builder
+      .addCase(fetchRecentProducts.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchRecentProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.recentProducts = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchRecentProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
     // Fetch categories
     builder
       .addCase(fetchCategories.pending, (state) => {

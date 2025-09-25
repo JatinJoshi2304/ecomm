@@ -4,18 +4,18 @@ import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchFeaturedProducts } from '@/store/slices/productSlice';
+import { fetchFeaturedProducts, fetchRecentProducts } from '@/store/slices/productSlice';
 
 
 export default function Home() {
   const dispatch = useAppDispatch();
-  const { featuredProducts, isLoading } = useAppSelector((state) => state.product);
+  const { featuredProducts,recentProducts, isLoading } = useAppSelector((state) => state.product);
 
   useEffect(() => {
     // Load featured products and categories
     dispatch(fetchFeaturedProducts());
+    dispatch(fetchRecentProducts());
     // dispatch(fetchCategories());
   }, [dispatch]);
 
@@ -114,10 +114,53 @@ export default function Home() {
               <ProductCard
                 key={product.id}
                 product={{
-                  id: product.id,
+                  id: product.id || "",
                   name: product.name,
                   description: product.description,
                   price: product.price,
+                  stock: product.stock,
+                  images: product.images,
+                  averageRating: 4.5, // Default rating
+                  reviewCount: 0, // Default review count
+                  category: {
+                    id: product.category._id,
+                    name: product.category.name,
+                  },
+                  brand: {
+                    id: product.brand._id,
+                    name: product.brand.name,
+                  },
+                  store: {
+                    id: product.storeId,
+                    name: 'Store',
+                    image: '',
+                  },
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Products */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Recently Launch Products</h2>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {recentProducts.map((product) => (
+              <ProductCard
+                key={product._id}
+                product={{
+                  id: product._id || "",
+                  name: product.name,
+                  description: product.description,
+                  price: product.price,
+                  stock: product.stock,
                   images: product.images,
                   averageRating: 4.5, // Default rating
                   reviewCount: 0, // Default review count

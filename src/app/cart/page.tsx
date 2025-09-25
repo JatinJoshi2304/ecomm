@@ -14,7 +14,7 @@ export default function CartPage() {
   const router = useRouter();
   
   const dispatch = useAppDispatch();
-  const { cart, isLoading, error } = useAppSelector((state) => state.cart);
+  const { cart, error } = useAppSelector((state) => state.cart);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { sessionId } = useAppSelector((state) => state.cart);
 

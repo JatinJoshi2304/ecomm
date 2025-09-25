@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const searchQuery = ''
+  const [searchQuery,setSearchQuery] = useState("");
   const router = useRouter();
   
   const dispatch = useAppDispatch();
@@ -31,12 +31,12 @@ export default function Header() {
     }
   }, [dispatch, isAuthenticated, token, sessionId]);
 
-  // const handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (searchQuery.trim()) {
-  //     router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-  //   }
-  // };
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -59,7 +59,7 @@ export default function Header() {
           </div>
 
           {/* Search Bar */}
-          {/* <div className="flex-1 max-w-lg mx-8">
+          <div className="flex-1 max-w-lg mx-8">
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
@@ -77,7 +77,7 @@ export default function Header() {
                 </svg>
               </button>
             </form>
-          </div> */}
+          </div>
 
           {/* Navigation */}
           <div className="hidden md:flex items-center space-x-6">
