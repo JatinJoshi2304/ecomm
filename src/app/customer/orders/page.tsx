@@ -79,7 +79,7 @@ export default function CustomerOrdersPage() {
         queryParams.append('status', selectedStatus);
       }
 
-      const response = await fetch(`/api/customer/orders`, {
+      const response = await fetch(`/api/customer/orders?${queryParams.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -176,7 +176,7 @@ export default function CustomerOrdersPage() {
             >
               All Orders
             </button>
-            {/* <button
+            <button
               onClick={() => handleStatusFilter('pending')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 selectedStatus === 'pending'
@@ -225,7 +225,7 @@ export default function CustomerOrdersPage() {
               }`}
             >
               Delivered
-            </button> */}
+            </button>
           </div>
         </div>
 

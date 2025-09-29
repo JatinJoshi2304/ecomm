@@ -104,6 +104,15 @@ export default function Header() {
               )}
             </Link>
 
+            {/* Wishlist - Only show for authenticated users */}
+            {isAuthenticated && (
+              <Link href="/customer/wishlists" className="text-gray-700 hover:text-blue-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </Link>
+            )}
+
             {/* User Menu */}
             {isAuthenticated && user ? (
               <div className="relative group">
@@ -119,6 +128,9 @@ export default function Header() {
                   </Link> */}
                   <Link href="/customer/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Orders
+                  </Link>
+                  <Link href="/customer/wishlists" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Wishlists
                   </Link>
                   {user.role === 'admin' && (
                     <Link href="/admin/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -176,6 +188,11 @@ export default function Header() {
               <Link href="/cart" className="block px-3 py-2 text-gray-700 hover:text-blue-600">
                 Cart
               </Link>
+              {isAuthenticated && (
+                <Link href="/customer/wishlists" className="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                  Wishlists
+                </Link>
+              )}
               {isAuthenticated && user ? (
                 <>
                   <Link href="/profile" className="block px-3 py-2 text-gray-700 hover:text-blue-600">

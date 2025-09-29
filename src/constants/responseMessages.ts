@@ -9,8 +9,10 @@ export const RESPONSE_MESSAGES = {
       SERVER_ERROR: "Internal server error",
       NOT_FOUND: "Resource not found",
       VALIDATION_FAILED: "Validation failed",
+      VALIDATION_ERROR: "Validation error",
       UNAUTHORIZED: "Unauthorized access",
       FORBIDDEN: "Access denied",
+      CONFLICT: "Resource conflict",
       INSUFFICIENT_STOCK: "Insufficient stock",
     },
     STATUS_CODES: {
@@ -20,6 +22,7 @@ export const RESPONSE_MESSAGES = {
       UNAUTHORIZED: 401,
       FORBIDDEN: 403,
       NOT_FOUND: 404,
+      CONFLICT: 409,
       SERVER_ERROR: 500,
     },
   } as const;
