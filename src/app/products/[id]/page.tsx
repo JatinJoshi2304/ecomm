@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WishlistButton from '@/components/WishlistButton';
+import ReviewsSection from '@/components/ReviewsSection';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
 
@@ -511,6 +512,16 @@ export default function ProductDetail() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-16">
+          <ReviewsSection
+            productId={product._id || product.id || ''}
+            productName={product.name}
+            averageRating={product.averageRating}
+            reviewCount={product.reviewCount}
+          />
         </div>
 
         {/* Related Products */}

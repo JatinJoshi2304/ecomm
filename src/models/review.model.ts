@@ -1,13 +1,25 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const reviewSchema = new Schema(
+export interface IReview extends Document {
+  productId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+  rating: number;
+  title?: string;
+  comment?: string;
+  isVerified: boolean;
+  helpful: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const reviewSchema: Schema<IReview> = new Schema(
   {
-    product: {
+    productId: {
       type: Schema.Types.ObjectId,
-      ref: "Product", // link each review to a product
+      ref: "Product",
       required: true,
     },
-    user: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -18,12 +30,36 @@ const reviewSchema = new Schema(
       max: 5,
       required: true,
     },
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+    },
     comment: {
       type: String,
       trim: true,
+      maxlength: 1000,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    helpful: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Review || mongoose.model("Review", reviewSchema);
+// Index for efficient queries
+reviewSchema.index({ productId: 1, userId: 1 }, { unique: true });
+reviewSchema.index({ productId: 1, rating: 1 });
+reviewSchema.index({ productId: 1, createdAt: -1 });
+
+// Force model refresh to ensure new schema is used
+if (mongoose.models.Review) {
+  delete mongoose.models.Review;
+}
+
+export default mongoose.model<IReview>("Review", reviewSchema);
