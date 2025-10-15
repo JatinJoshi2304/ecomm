@@ -39,7 +39,7 @@ interface Category {
 
 export default function CategoryProductsPage() {
   const params = useParams();
-  const categoryId = params.id as string;
+  const categoryId = params?.id as string;
   
   const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);

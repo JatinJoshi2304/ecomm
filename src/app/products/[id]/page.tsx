@@ -60,7 +60,7 @@ type RelatedProducts = Product[];
 
 export default function ProductDetail() {
   const params = useParams();
-  const productId = params.id as string;
+  const productId = params?.id as string;
   
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProduct, setRelatedProduct] = useState<RelatedProducts | null>(null);

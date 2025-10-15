@@ -54,13 +54,13 @@ export default function SearchPage() {
   const [brands, setBrands] = useState<any[]>([]);
   
   const [filters, setFilters] = useState<SearchFilters>({
-    query: searchParams.get('q') || '',
-    category: searchParams.get('category') || '',
-    brand: searchParams.get('brand') || '',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    sortBy: searchParams.get('sortBy') || 'createdAt',
-    sortOrder: searchParams.get('sortOrder') || 'desc',
+    query: searchParams?.get('q') || '',
+    category: searchParams?.get('category') || '',
+    brand: searchParams?.get('brand') || '',
+    minPrice: searchParams?.get('minPrice') || '',
+    maxPrice: searchParams?.get('maxPrice') || '',
+    sortBy: searchParams?.get('sortBy') || 'createdAt',
+    sortOrder: searchParams?.get('sortOrder') || 'desc',
     page: 1,
     limit: 12
   });
@@ -147,15 +147,15 @@ export default function SearchPage() {
   useEffect(() => {
     setFilters(prev => ({
       ...prev,
-      query: searchParams.get('q') || '',
-      category: searchParams.get('category') || '',
-      brand: searchParams.get('brand') || '',
-      minPrice: searchParams.get('minPrice') || '',
-      maxPrice: searchParams.get('maxPrice') || '',
-      sortBy: searchParams.get('sortBy') || 'createdAt',
-      sortOrder: searchParams.get('sortOrder') || 'desc',
-      page: Number(searchParams.get('page')) || 1,
-      limit: Number(searchParams.get('limit')) || 12,
+      query: searchParams?.get('q') || '',
+      category: searchParams?.get('category') || '',
+      brand: searchParams?.get('brand') || '',
+      minPrice: searchParams?.get('minPrice') || '',
+      maxPrice: searchParams?.get('maxPrice') || '',
+      sortBy: searchParams?.get('sortBy') || 'createdAt',
+      sortOrder: searchParams?.get('sortOrder') || 'desc',
+      page: Number(searchParams?.get('page')) || 1,
+      limit: Number(searchParams?.get('limit')) || 12,
     }));
   }, [searchParams]);
 

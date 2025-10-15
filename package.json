@@ -17,10 +17,15 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "next": "15.5.3",
+    "next-connect": "^1.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "swagger-ui-react": "^5.29.4",
+    "yaml": "^2.8.1",
+    "yamljs": "^0.3.0",
     "yup": "^1.7.1"
   },
   "devDependencies": {
@@ -32,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "tailwindcss": "^4",

@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: My Next.js API
+  version: 1.0.0
+  description: API documentation for my Next.js project
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /test:
+    get:
+      summary: Returns a greeting
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hello World,
+  /auth/register:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  example: john@example.com
+                password:
+                  type: string
+                  example: 123456
+                role:
+                  type: string
+                  example: Seller
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+                  name:
+                    type: string
+                    example: John Doe
+                  email:
+                    type: string
+                    example: john@example.com
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@example.com
+                password:
+                  type: string
+                  example: 123456
+      responses:
+        "200":
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+                  name:
+                    type: string
+                    example: John Doe
+                  email:
+                    type: string
+                    example: john@example.com
+  /seller/store:
+    post:
+      summary: Create Store
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                storeName:
+                  type: string
+                  example: My Store
+                storeDescription:
+                  type: string
+                  example: My Store
+      responses:
+        "201":
+          description: Store created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+                  name:
+                    type: string
+                    example: John Doe
+  /seller/products:
+    get:
+      summary: Get Seller Products
+      description: Fetch list of products created by the logged-in seller
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product list fetched successfully
+    post:
+      summary: Create Product
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand:
+                  type: string
+                  example: "68d01848a390a77dad3fb9a5"
+                category:
+                  type: string
+                  example: "68cd1a41966d46e283e27ea8"
+                color:
+                  type: string
+                  example: "68cd35c8966d46e283e27ef9"
+                description:
+                  type: string
+                  example: "Neck Band with high quality sound."
+                name:
+                  type: string
+                  example: "Neck Band By JBL"
+                price:
+                  type: number
+                  example: 999
+                stock:
+                  type: number
+                  example: 99
+                tag:
+                  type: array
+                  example: ["68cd3cac966d46e283e27f19","68cd3c9c966d46e283e27f15","68cd3cb5966d46e283e27f1c"]
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+  /seller/orders:
+    get:
+      summary: Get orders
+      description: Fetch list of orders
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Orders list fetched successfully
+    patch:
+      summary: Create Product
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+                  example: "68ef61af1a443edbd7ce29a8"
+                orderStatus:
+                  type: string
+                  example: "shipped"
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+# seller/orders
+
+components:
+  securitySchemes:
+    bearerAuth: # 🔒 Define Bearer Token Authentication
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

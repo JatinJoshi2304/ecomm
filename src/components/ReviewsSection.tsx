@@ -44,13 +44,7 @@ export default function ReviewsSection({
   const [totalPages, setTotalPages] = useState(1);
   const [ratingFilter, setRatingFilter] = useState('');
   const [sortBy, setSortBy] = useState('newest');
-  const [ratingStats, setRatingStats] = useState({
-    5: 0,
-    4: 0,
-    3: 0,
-    2: 0,
-    1: 0
-  });
+ 
 
   // Find current user's review
   const userReview = reviews.find(r => r.userId._id === user?.id) || null;
@@ -72,7 +66,7 @@ export default function ReviewsSection({
         if (result.success) {
           setReviews(result.data.reviews);
           setTotalPages(result.data.pagination.totalPages);
-          setRatingStats(result.data.ratingStats);
+          // setRatingStats(result.data.ratingStats);
         }
       }
     } catch (error) {
