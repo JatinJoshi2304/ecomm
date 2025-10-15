@@ -80,8 +80,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         rating: review.rating,
         comment: review.comment,
         user: {
-          id: review.userId._id,
-          name: review.userId.name,
+          id: (review.userId as any)._id,
+          name: (review.userId as any).name,
         },
         createdAt: review.createdAt,
         updatedAt: review.updatedAt,

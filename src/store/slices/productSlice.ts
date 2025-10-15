@@ -9,6 +9,7 @@ export interface Product {
   price: number;
   stock: number;
   images: string[];
+  averageRating: number;
   category: {
     _id: string;
     name: string;

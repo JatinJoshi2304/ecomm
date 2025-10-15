@@ -1,12 +1,12 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { useAppSelector } from '@/store/hooks';
-import Image from 'next/image';
+"use client";
+import React, { use } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useAppSelector } from "@/store/hooks";
+import Image from "next/image";
 
 interface Wishlist {
   _id: string;
@@ -33,42 +33,46 @@ interface WishlistItem {
   size?: { name: string };
   color?: { name: string; hexCode: string };
   notes?: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   createdAt: string;
 }
 
-interface CustomerWishlistPageProps {
-  params: {
-    id: string;
-  };
-}
+// interface CustomerWishlistPageProps {
+//   params: {
+//     id: string;
+//   };
+// }
 
-export default function CustomerWishlistPage({ params }: CustomerWishlistPageProps) {
+export default function CustomerWishlistPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const router = useRouter();
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
-  
+  const { id }: any = use(params);
   const [wishlist, setWishlist] = useState<Wishlist | null>(null);
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [editName, setEditName] = useState('');
-  const [editDescription, setEditDescription] = useState('');
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   const [editPublic, setEditPublic] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
     loadWishlist();
-  }, [isAuthenticated, router, params.id]);
+  }, [isAuthenticated, router, id]);
 
   const loadWishlist = async () => {
     try {
-      const response = await fetch(`/api/customer/wishlists/${params.id}`, {
+      const response = await fetch(`/api/customer/wishlists/${id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -77,12 +81,12 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
           setWishlist(result.data.wishlist);
           setItems(result.data.items);
           setEditName(result.data.wishlist.name);
-          setEditDescription(result.data.wishlist.description || '');
+          setEditDescription(result.data.wishlist.description || "");
           setEditPublic(result.data.wishlist.isPublic);
         }
       }
     } catch (error) {
-      console.error('Failed to load wishlist:', error);
+      console.error("Failed to load wishlist:", error);
     } finally {
       setLoading(false);
     }
@@ -90,21 +94,21 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
 
   const handleUpdateWishlist = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!editName.trim()) return;
 
     try {
-      const response = await fetch(`/api/customer/wishlists/${params.id}`, {
-        method: 'PUT',
+      const response = await fetch(`/api/customer/wishlists/${id}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: editName.trim(),
           description: editDescription.trim(),
-          isPublic: editPublic
-        })
+          isPublic: editPublic,
+        }),
       });
 
       if (response.ok) {
@@ -115,39 +119,45 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
         }
       }
     } catch (error) {
-      console.error('Failed to update wishlist:', error);
+      console.error("Failed to update wishlist:", error);
     }
   };
 
   const handleRemoveItem = async (itemId: string) => {
-    if (!confirm('Are you sure you want to remove this item from your wishlist?')) return;
+    if (
+      !confirm("Are you sure you want to remove this item from your wishlist?")
+    )
+      return;
 
     try {
-      const response = await fetch(`/api/customer/wishlists/${params.id}/items/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await fetch(
+        `/api/customer/wishlists/${id}/items/${itemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (response.ok) {
-        setItems(items.filter(item => item._id !== itemId));
+        setItems(items.filter((item) => item._id !== itemId));
       }
     } catch (error) {
-      console.error('Failed to remove item:', error);
+      console.error("Failed to remove item:", error);
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high':
-        return 'bg-red-100 text-red-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -169,7 +179,9 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Wishlist not found</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Wishlist not found
+            </h3>
             <Link
               href="/customer/wishlists"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -186,13 +198,15 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{wishlist.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {wishlist.name}
+              </h1>
               {wishlist.description && (
                 <p className="text-gray-600 mt-2">{wishlist.description}</p>
               )}
@@ -229,7 +243,9 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
         {/* Edit Form */}
         {showEditForm && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Wishlist</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Edit Wishlist
+            </h3>
             <form onSubmit={handleUpdateWishlist}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -245,7 +261,9 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
                     disabled={wishlist.isDefault}
                   />
                   {wishlist.isDefault && (
-                    <p className="text-xs text-gray-500 mt-1">Cannot rename default wishlist</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Cannot rename default wishlist
+                    </p>
                   )}
                 </div>
                 <div>
@@ -259,7 +277,9 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
                       onChange={(e) => setEditPublic(e.target.checked)}
                       className="mr-2"
                     />
-                    <span className="text-sm text-gray-600">Make this wishlist public</span>
+                    <span className="text-sm text-gray-600">
+                      Make this wishlist public
+                    </span>
                   </label>
                 </div>
               </div>
@@ -298,11 +318,20 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
           <div className="text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 text-gray-400">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No items in this wishlist</h3>
-            <p className="text-gray-600 mb-6">Start adding products to your wishlist</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No items in this wishlist
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Start adding products to your wishlist
+            </p>
             <Link
               href="/"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -313,7 +342,10 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((item) => (
-              <div key={item._id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div
+                key={item._id}
+                className="bg-white rounded-lg shadow-md overflow-hidden"
+              >
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
@@ -321,15 +353,16 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
                         {item.productId.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">
-                        {item.productId.brand.name} • {item.productId.category.name}
+                        {item.productId.brand.name} •{" "}
+                        {item.productId.category.name}
                       </p>
                       <p className="text-lg font-bold text-gray-900">
                         ₹{item.productId.price.toFixed(2)}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(item.priority)}`}>
+                    {/* <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(item.priority)}`}>
                       {item.priority}
-                    </span>
+                    </span> */}
                   </div>
 
                   {/* Product Image */}
@@ -344,8 +377,18 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
                       />
                     ) : (
                       <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg">
-                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg
+                          className="w-12 h-12 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
                         </svg>
                       </div>
                     )}
@@ -355,12 +398,14 @@ export default function CustomerWishlistPage({ params }: CustomerWishlistPagePro
                   <div className="mb-4">
                     {item.size && (
                       <p className="text-sm text-gray-600 mb-1">
-                        <span className="font-medium">Size:</span> {item.size.name}
+                        <span className="font-medium">Size:</span>{" "}
+                        {item.size.name}
                       </p>
                     )}
                     {item.color && (
                       <p className="text-sm text-gray-600 mb-1">
-                        <span className="font-medium">Color:</span> {item.color.name}
+                        <span className="font-medium">Color:</span>{" "}
+                        {item.color.name}
                       </p>
                     )}
                     {item.notes && (

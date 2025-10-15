@@ -184,12 +184,12 @@ export default function CustomerWishlistsPage() {
               <h1 className="text-3xl font-bold text-gray-900">My Wishlists</h1>
               <p className="text-gray-600 mt-2">Organize your favorite products into wishlists</p>
             </div>
-            <button
+            {/* <button
               onClick={() => setShowCreateForm(true)}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               Create New Wishlist
-            </button>
+            </button> */}
           </div>
         </div>
 

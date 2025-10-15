@@ -70,7 +70,7 @@ export default function ProductCard({
       setIsAddingToCart(false);
     }
   };
-
+console.log(">>>>>>>>>>>",product.averageRating)
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -175,9 +175,9 @@ export default function ProductCard({
           <div className="flex items-center">
             {renderStars(product.averageRating)}
           </div>
-          <span className="text-sm text-gray-500 ml-2">
+          {/* <span className="text-sm text-gray-500 ml-2">
             ({product.reviewCount})
-          </span>
+          </span> */}
         </div>
 
         <div className="flex items-center justify-between mb-3">

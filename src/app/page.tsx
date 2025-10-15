@@ -120,7 +120,7 @@ export default function Home() {
                   price: product.price,
                   stock: product.stock,
                   images: product.images,
-                  averageRating: 4.5, // Default rating
+                  averageRating: product.averageRating || 4.5, // Default rating
                   reviewCount: 0, // Default review count
                   category: {
                     id: product.category._id,

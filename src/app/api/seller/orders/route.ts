@@ -116,8 +116,9 @@ export async function PATCH(req: NextRequest) {
     await connectDB();
 
     const sellerId = (req as any).user.id;
+    console.log("sellerId :::",sellerId)
     const { orderId, orderStatus } = await req.json();
-
+console.log("Till Here");
     if (!orderId || !orderStatus) {
       return NextResponse.json(
         errorResponse(
@@ -154,13 +155,13 @@ export async function PATCH(req: NextRequest) {
         { status: RESPONSE_MESSAGES.STATUS_CODES.NOT_FOUND }
       );
     }
-
+console.log("Before :::",orderId,"jwhsdjkh",store._id);
     // Check if seller has items in this order
     const hasItems = await OrderItem.findOne({
       orderId,
       sellerId: store._id, // ✅ use store._id same as GET API
     });
-
+    console.log("After :::",hasItems  );
     if (!hasItems) {
       return NextResponse.json(
         errorResponse(

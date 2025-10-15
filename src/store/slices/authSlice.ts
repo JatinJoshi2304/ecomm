@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 // Types
 export interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   role: 'customer' | 'seller' | 'admin';
@@ -35,7 +35,7 @@ export interface RegisterData {
 export interface AuthResponse {
   success: boolean;
   data: {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     role: string;
@@ -160,9 +160,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log("Action payload ::::", action.payload);
         state.user = {
-          _id: action.payload.data._id,
+          id: action.payload.data.id,
           name: action.payload.data.name,
           email: action.payload.data.email,
           role: action.payload.data.role as 'customer' | 'seller' | 'admin',

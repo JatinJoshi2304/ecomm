@@ -31,15 +31,15 @@ interface ReviewsSectionProps {
 
 export default function ReviewsSection({ 
   productId, 
-  productName, 
+  // productName,
   averageRating, 
   reviewCount 
 }: ReviewsSectionProps) {
-  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, token, user } = useAppSelector((state) => state.auth);
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [ratingFilter, setRatingFilter] = useState('');
@@ -52,6 +52,10 @@ export default function ReviewsSection({
     1: 0
   });
 
+  // Find current user's review
+  const userReview = reviews.find(r => r.userId._id === user?.id) || null;
+  const otherReviews = reviews.filter(r => r.userId._id !== user?.id);
+
   const loadReviews = async (page = 1, rating = '', sort = 'newest') => {
     try {
       setLoading(true);
@@ -60,13 +64,9 @@ export default function ReviewsSection({
         limit: '5',
         sortBy: sort
       });
-      
-      if (rating) {
-        params.append('rating', rating);
-      }
+      if (rating) params.append('rating', rating);
 
       const response = await fetch(`/api/customer/products/${productId}/reviews?${params}`);
-      
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
@@ -82,42 +82,19 @@ export default function ReviewsSection({
     }
   };
 
-  const loadUserReview = async () => {
-    if (!isAuthenticated) return;
-    
-    try {
-      const response = await fetch(`/api/customer/reviews?productId=${productId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data.reviews.length > 0) {
-          setEditingReview(result.data.reviews[0]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load user review:', error);
-    }
-  };
-
   useEffect(() => {
     loadReviews(currentPage, ratingFilter, sortBy);
-    loadUserReview();
-  }, [productId, currentPage, ratingFilter, sortBy, isAuthenticated, token]);
+  }, [productId, currentPage, ratingFilter, sortBy]);
 
   const handleReviewSubmitted = () => {
     setShowReviewForm(false);
-    setEditingReview(null);
     loadReviews(currentPage, ratingFilter, sortBy);
-    loadUserReview();
   };
 
   const handleEditReview = (review: Review) => {
-    setEditingReview(review);
-    setShowReviewForm(true);
+    if (review.userId._id === user?.id) {
+      setShowReviewForm(true);
+    }
   };
 
   const handleDeleteReview = async (reviewId: string) => {
@@ -128,10 +105,8 @@ export default function ReviewsSection({
           'Authorization': `Bearer ${token}`
         }
       });
-
       if (response.ok) {
         loadReviews(currentPage, ratingFilter, sortBy);
-        loadUserReview();
       }
     } catch (error) {
       console.error('Failed to delete review:', error);
@@ -139,8 +114,6 @@ export default function ReviewsSection({
   };
 
   const handleHelpful = async (reviewId: string) => {
-    // This would typically update the helpful count via API
-    // For now, we'll just handle it locally
     console.log('Marked review as helpful:', reviewId);
   };
 
@@ -154,10 +127,10 @@ export default function ReviewsSection({
     setCurrentPage(1);
   };
 
-  const getRatingPercentage = (rating: number) => {
-    if (reviewCount === 0) return 0;
-    return Math.round((ratingStats[rating as keyof typeof ratingStats] / reviewCount) * 100);
-  };
+  // const getRatingPercentage = (rating: number) => {
+  //   if (reviewCount === 0) return 0;
+  //   return Math.round((ratingStats[rating as keyof typeof ratingStats] / reviewCount) * 100);
+  // };
 
   return (
     <div className="space-y-6">
@@ -165,9 +138,7 @@ export default function ReviewsSection({
       <div className="border-b border-gray-200 pb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Customer Reviews
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Customer Reviews</h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <StarRating rating={averageRating} size="lg" showRating={true} />
@@ -177,8 +148,9 @@ export default function ReviewsSection({
               </div>
             </div>
           </div>
-          
-          {isAuthenticated && !editingReview && (
+
+          {/* Write a Review button only if user has no review */}
+          {isAuthenticated && !userReview && !showReviewForm && (
             <button
               onClick={() => setShowReviewForm(true)}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -189,7 +161,7 @@ export default function ReviewsSection({
         </div>
 
         {/* Rating Distribution */}
-        {reviewCount > 0 && (
+        {/* {reviewCount > 0 && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               {[5, 4, 3, 2, 1].map((rating) => (
@@ -217,24 +189,20 @@ export default function ReviewsSection({
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
-      {/* Review Form */}
-      {(showReviewForm || editingReview) && (
+      {/* User Review Form */}
+      {isAuthenticated && (showReviewForm || userReview) && (
         <ReviewForm
           productId={productId}
-          existingReview={editingReview ? {
-            id: editingReview._id,
-            rating: editingReview.rating,
-            title: editingReview.title,
-            comment: editingReview.comment
+          existingReview={userReview ? {
+            id: userReview._id,
+            rating: userReview.rating,
+            title: userReview.title,
+            comment: userReview.comment
           } : undefined}
           onReviewSubmitted={handleReviewSubmitted}
-          onCancel={() => {
-            setShowReviewForm(false);
-            setEditingReview(null);
-          }}
         />
       )}
 
@@ -245,7 +213,7 @@ export default function ReviewsSection({
             <select
               value={ratingFilter}
               onChange={(e) => handleFilterChange(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">All Ratings</option>
               <option value="5">5 Stars</option>
@@ -259,7 +227,7 @@ export default function ReviewsSection({
           <select
             value={sortBy}
             onChange={(e) => handleSortChange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -275,7 +243,7 @@ export default function ReviewsSection({
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-      ) : reviews.length === 0 ? (
+      ) : otherReviews.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600">
             {ratingFilter ? 'No reviews found for the selected rating.' : 'No reviews yet.'}
@@ -283,7 +251,7 @@ export default function ReviewsSection({
         </div>
       ) : (
         <div className="space-y-6">
-          {reviews.map((review) => (
+          {otherReviews.map((review) => (
             <ReviewCard
               key={review._id}
               review={review}
